@@ -74,6 +74,8 @@ void Error_Handler(void);
 #define SPI1_SCK_GPIO_Port GPIOG
 #define SPI3_MOSI_Pin GPIO_PIN_6
 #define SPI3_MOSI_GPIO_Port GPIOD
+#define TEST_OUTPUT_Pin GPIO_PIN_7
+#define TEST_OUTPUT_GPIO_Port GPIOK
 #define DEBUG_RX_Pin GPIO_PIN_10
 #define DEBUG_RX_GPIO_Port GPIOA
 #define DEBUG_TX_Pin GPIO_PIN_9

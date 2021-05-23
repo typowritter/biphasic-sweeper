@@ -20,12 +20,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "led.h"
+#include "delay.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,16 +96,20 @@ int main(void)
   MX_USART1_UART_Init();
   MX_SPI1_Init();
   MX_SPI3_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
+  delay_init();
   LED_SetColor(LED_G);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    delay_us(500);
+    HAL_GPIO_TogglePin(TEST_OUTPUT_GPIO_Port, TEST_OUTPUT_Pin);
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
