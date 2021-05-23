@@ -1,3 +1,12 @@
+/**
+  ******************************************************************************
+  * @file    ads124s0x.h
+  * @author  yxnan <yxnan@pm.me>
+  * @date    2021-05-19
+  * @brief   driver for ads124s08/ads124s06
+  ******************************************************************************
+  */
+
 #ifndef __ADS124S0X_H
 #define __ADS124S0X_H
 
@@ -10,6 +19,8 @@ extern "C" {
 
 #define ads124s_dev         hspi1
 #define ads124s_spi_timeout 100000
+/* keep this synchronized with definitions in main.h */
+DEF_GPIO(ads124s_pin_rst, SPI1_RST_GPIO_Port, SPI1_RST_Pin);
 
 enum ads124s_id {
   ADS124S08_ID,
@@ -162,6 +173,8 @@ typedef enum {
   ads124s_chan_ain9   = 0x09,
   ads124s_chan_ain10  = 0x0a,
   ads124s_chan_ain11  = 0x0b,
+  /* For IDAC only */
+  ads124s_idac_off    = 0x0f,
 } ads124s_channel;
 
 typedef enum {
@@ -274,21 +287,56 @@ typedef enum {
 } ads124s_gpio_conf;
 
 
+static INLINE void      ads124s_select();
+static INLINE void      ads124s_unselect();
 static INLINE void      ads124s_set_value(ads124s_register_bit field, uint8_t value);
 static INLINE uint8_t   ads124s_get_value(ads124s_register_bit field);
 static INLINE void      ads124s_send_cmd(uint8_t cmd);
 static INLINE void      ads124s_update_matching_reg(ads124s_register_bit field);
 
 void ads124s_reset();
-void ads124s_performSelfGainCalibration();
-void ads124s_performSelfOffsetCalibration();
 void ads124s_performSystemOffsetCalibration();
+void ads124s_performSystemGainCalibration();
+void ads124s_performSelfOffsetCalibration();
 void ads124s_read_conv_data(uint32_t *conv_data);
 void ads124s_update_reg(ads124s_register* reg);
-void ads124s_read_reg(ads124s_register* reg, uint8_t num, uint8_t* buf)
+
+/**
+ * reads a register from device.
+ *
+ * @param reg  -- a member of global struct ads124s_regs
+ * @param data -- buffer for received byte
+ *
+ * @note: global struct ads124s_regs WILL be updated
+ */
+void ads124s_read_reg(ads124s_register* reg, uint8_t* data);
+
+/**
+ * reads multiple registers from device.
+ *
+ * @param reg   -- the first register to read
+ * @param num   -- number of registers to read
+ * @param data  -- buffer for received bytes,
+                   should at least have a length of num
+ *
+ * @note: global struct ads124s_regs WILL NOT be updated
+ */
+void ads124s_read_regs(ads124s_register* reg, uint8_t regnum, uint8_t* data);
 
 
 /** implementation starts here */
+static INLINE void
+ads124s_select()
+{
+  gpio_set_low(ads124s_pin_rst);
+}
+
+static INLINE void
+ads124s_unselect()
+{
+  gpio_set_high(ads124s_pin_rst);
+}
+
 static INLINE void
 ads124s_set_value(ads124s_register_bit field, uint8_t value)
 {

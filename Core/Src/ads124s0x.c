@@ -1,5 +1,7 @@
 #include "ads124s0x.h"
+#include "delay.h"
 
+/* singleton */
 ads124s_registers ads124s_regs = {
   .id       = {.addr = 0x00, .value = 0x00, .is_volatile = false },
   .status   = {.addr = 0x01, .value = 0x80, .is_volatile = true },
@@ -25,16 +27,50 @@ ads124s_registers ads124s_regs = {
 void ads124s_reset()
 {
   ads124s_send_cmd(ads124s_cmd_reset);
-  HAL_Delay(1); // td(RSSC) in internal clk
+  delay_ms(1);  /* td(RSSC) in internal clk */
 }
 
-void ads124s_read_reg(ads124s_register* reg, uint8_t num, uint8_t* buf)
+void ads124s_read_reg(ads124s_register* reg, uint8_t* data)
 {
-  uint8_t cmd_buffer[2] = {
+  uint8_t tx_buffer[3] = {
     ads124s_cmd_rreg | reg->addr,
-    num - 1,
+    0,                /* opcode 1 reg */
+    ads124s_cmd_nop,  /* dummy */
   };
 
-  HAL_SPI_Transmit(ads124s_dev, cmd_buffer, 2, ads124s_spi_timeout);
-  HAL_SPI_Receive(ads124s_dev, buf, num, ads124s_spi_timeout);
+  uint8_t rx_buffer[3];
+
+  ads124s_select();
+
+  HAL_SPI_TransmitReceive(ads124s_dev, tx_buffer, rx_buffer,
+    3, ads124s_spi_timeout);
+
+  *data = rx_buffer[2];
+  reg->value = rx_buffer[2];
+
+  ads124s_unselect();
+}
+
+void ads124s_read_regs(ads124s_register* reg, uint8_t regnum, uint8_t* data)
+{
+  uint8_t tx_buffer[regnum+2] = {
+    ads124s_cmd_rreg | reg->addr,
+    regnum - 1,  /* opcode regnum */
+  };
+
+  uint8_t rx_buffer[regnum+2];
+
+  HAL_SPI_TransmitReceive(ads124s_dev, tx_buffer, rx_buffer,
+    regnum+2, ads124s_spi_timeout);
+
+  for (int i = 0; i < regnum; i++)
+  {
+    data[i] = rx_buffer[i+2];
+    // (reg++)->value = rx_buffer[i+2];
+  }
+}
+
+void ads124s_performSystemOffsetCalibration()
+{
+  ads124s_send_cmd(ads124s_cmd_syocal);
 }

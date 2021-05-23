@@ -1,3 +1,12 @@
+/**
+  ******************************************************************************
+  * @file    utils.h
+  * @author  yxnan <yxnan@pm.me>
+  * @date    2021-05-21
+  * @brief   utilities
+  ******************************************************************************
+  */
+
 #ifndef __UTILS_H
 #define __UTILS_H
 
@@ -12,6 +21,10 @@ extern "C" {
 #define _str(s) #s
 #define str(s) _str(s)
 
+/*
+ * compound literals, supported since C99
+ * see: 'https://en.cppreference.com/w/c/language/compound_literal'
+*/
 #define lit2addr(lit) (&(uint8_t){lit})
 
 
