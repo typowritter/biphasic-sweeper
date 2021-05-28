@@ -20,7 +20,11 @@ extern "C" {
 #define ads124s_dev         hspi1
 #define ads124s_spi_timeout 100000
 /* keep this synchronized with definitions in main.h */
-DEF_GPIO(ads124s_pin_rst, SPI1_RST_GPIO_Port, SPI1_RST_Pin);
+DEF_GPIO(ads124s_pin_rst,  ADS124S_RST_GPIO_Port,  ADS124S_RST_Pin);
+DEF_GPIO(ads124s_pin_cs,   ADS124S_CS_GPIO_Port,   ADS124S_CS_Pin);
+DEF_GPIO(ads124s_pin_sync, ADS124S_SYNC_GPIO_Port, ADS124S_SYNC_Pin);
+DEF_GPIO(ads124s_pin_drdy, ADS124S_DRDY_GPIO_Port, ADS124S_DRDY_Pin);
+#undef DEF_GPIO
 
 enum ads124s_id {
   ADS124S08_ID,
@@ -291,6 +295,8 @@ static INLINE void      ads124s_select();
 static INLINE void      ads124s_unselect();
 static INLINE void      ads124s_set_value(ads124s_register_bit field, uint8_t value);
 static INLINE uint8_t   ads124s_get_value(ads124s_register_bit field);
+static INLINE void      ads124s_read_reg(ads124s_register* reg, uint8_t* data);
+static INLINE void      ads124s_write_reg(ads124s_register* reg, uint8_t* data);
 static INLINE void      ads124s_send_cmd(uint8_t cmd);
 static INLINE void      ads124s_update_matching_reg(ads124s_register_bit field);
 
@@ -301,15 +307,6 @@ void ads124s_performSelfOffsetCalibration();
 void ads124s_read_conv_data(uint32_t *conv_data);
 void ads124s_update_reg(ads124s_register* reg);
 
-/**
- * reads a register from device.
- *
- * @param reg  -- a member of global struct ads124s_regs
- * @param data -- buffer for received byte
- *
- * @note: global struct ads124s_regs WILL be updated
- */
-void ads124s_read_reg(ads124s_register* reg, uint8_t* data);
 
 /**
  * reads multiple registers from device.
@@ -319,22 +316,24 @@ void ads124s_read_reg(ads124s_register* reg, uint8_t* data);
  * @param data  -- buffer for received bytes,
                    should at least have a length of num
  *
- * @note: global struct ads124s_regs WILL NOT be updated
+ * @note: global struct ads124s_regs WILL be updated
  */
-void ads124s_read_regs(ads124s_register* reg, uint8_t regnum, uint8_t* data);
+void ads124s_read_regs(ads124s_register* reg, uint8_t num, uint8_t* data);
+
+void ads124s_write_regs(ads124s_register* reg, uint8_t num, uint8_t* data);
 
 
 /** implementation starts here */
 static INLINE void
 ads124s_select()
 {
-  gpio_set_low(ads124s_pin_rst);
+  gpio_set_low(ads124s_pin_cs);
 }
 
 static INLINE void
 ads124s_unselect()
 {
-  gpio_set_high(ads124s_pin_rst);
+  gpio_set_high(ads124s_pin_cs);
 }
 
 static INLINE void
@@ -354,6 +353,18 @@ ads124s_get_value(ads124s_register_bit field)
   /* convert the numbers of bits in a mask with matching length */
   const uint8_t mask = ((uint8_t)1 << field.bits) - 1;
   return (field.reg->value >> field.offset) & mask;
+}
+
+static INLINE void
+ads124s_read_reg(ads124s_register* reg, uint8_t* data)
+{
+  ads124s_read_regs(reg, 1, data);
+}
+
+static INLINE void
+ads124s_write_reg(ads124s_register* reg, uint8_t* data)
+{
+  ads124s_write_regs(reg, 1, data);
 }
 
 static INLINE void

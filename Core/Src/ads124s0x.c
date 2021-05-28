@@ -23,6 +23,8 @@ ads124s_registers ads124s_regs = {
   .gpiocon  = {.addr = 0x11, .value = 0x00, .is_volatile = false },
 };
 
+static uint8_t tx_buffer[5];  /* transmit up to 3 regs in one run */
+static uint8_t rx_buffer[5];
 
 void ads124s_reset()
 {
@@ -30,44 +32,40 @@ void ads124s_reset()
   delay_ms(1);  /* td(RSSC) in internal clk */
 }
 
-void ads124s_read_reg(ads124s_register* reg, uint8_t* data)
+void ads124s_read_regs(ads124s_register* reg, uint8_t num, uint8_t* data)
 {
-  uint8_t tx_buffer[3] = {
-    ads124s_cmd_rreg | reg->addr,
-    0,                /* opcode 1 reg */
-    ads124s_cmd_nop,  /* dummy */
-  };
-
-  uint8_t rx_buffer[3];
+  tx_buffer[0] = ads124s_cmd_rreg | reg->addr;
+  tx_buffer[1] = num - 1;         /* opcode 1 reg */
+  tx_buffer[2] = ads124s_cmd_nop; /* dummy */
 
   ads124s_select();
 
-  HAL_SPI_TransmitReceive(ads124s_dev, tx_buffer, rx_buffer,
-    3, ads124s_spi_timeout);
+  HAL_SPI_TransmitReceive(&ads124s_dev, tx_buffer, rx_buffer,
+    num+2, ads124s_spi_timeout);
 
-  *data = rx_buffer[2];
-  reg->value = rx_buffer[2];
+  for (int i = 0; i < num; i++)
+  {
+    data[i] = rx_buffer[i+2];
+    (reg++)->value = rx_buffer[i+2];
+  }
 
   ads124s_unselect();
 }
 
-void ads124s_read_regs(ads124s_register* reg, uint8_t regnum, uint8_t* data)
+void ads124s_write_regs(ads124s_register* reg, uint8_t num, uint8_t* data)
 {
-  uint8_t tx_buffer[regnum+2] = {
-    ads124s_cmd_rreg | reg->addr,
-    regnum - 1,  /* opcode regnum */
-  };
+  tx_buffer[0] = ads124s_cmd_wreg | reg->addr;
+  tx_buffer[1] = num - 1;         /* opcode 1 reg */
 
-  uint8_t rx_buffer[regnum+2];
-
-  HAL_SPI_TransmitReceive(ads124s_dev, tx_buffer, rx_buffer,
-    regnum+2, ads124s_spi_timeout);
-
-  for (int i = 0; i < regnum; i++)
+  for (int i = 0; i < num; i++)
   {
-    data[i] = rx_buffer[i+2];
-    // (reg++)->value = rx_buffer[i+2];
+    tx_buffer[i+2] = data[i];
+    (reg++)->value = data[i];
   }
+
+  ads124s_select();
+  HAL_SPI_Transmit(&ads124s_dev, tx_buffer, num+2, ads124s_spi_timeout);
+  ads124s_unselect();
 }
 
 void ads124s_performSystemOffsetCalibration()
