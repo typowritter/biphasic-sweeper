@@ -26,13 +26,18 @@ ads124s_registers ads124s_regs = {
 static uint8_t tx_buffer[5];  /* transmit up to 3 regs in one run */
 static uint8_t rx_buffer[5];
 
+void ads124s_test()
+{
+  ads124s_read_reg(&ads124s_regs.status);
+}
+
 void ads124s_reset()
 {
   ads124s_send_cmd(ads124s_cmd_reset);
-  delay_ms(1);  /* td(RSSC) in internal clk */
+  delay_ms(2);  /* td(RSSC) in internal clk */
 }
 
-void ads124s_read_regs(ads124s_register* reg, uint8_t num, uint8_t* data)
+void ads124s_read_regs(ads124s_register* reg, uint8_t num)
 {
   tx_buffer[0] = ads124s_cmd_rreg | reg->addr;
   tx_buffer[1] = num - 1;         /* opcode 1 reg */
@@ -45,7 +50,6 @@ void ads124s_read_regs(ads124s_register* reg, uint8_t num, uint8_t* data)
 
   for (int i = 0; i < num; i++)
   {
-    data[i] = rx_buffer[i+2];
     (reg++)->value = rx_buffer[i+2];
   }
 
@@ -66,6 +70,11 @@ void ads124s_write_regs(ads124s_register* reg, uint8_t num, uint8_t* data)
   ads124s_select();
   HAL_SPI_Transmit(&ads124s_dev, tx_buffer, num+2, ads124s_spi_timeout);
   ads124s_unselect();
+}
+
+void ads124s_update_reg(ads124s_register* reg)
+{
+  ads124s_write_reg(reg, reg->value);
 }
 
 void ads124s_performSystemOffsetCalibration()
