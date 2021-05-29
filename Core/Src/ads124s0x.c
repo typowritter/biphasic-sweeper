@@ -23,18 +23,27 @@ ads124s_registers ads124s_regs = {
   .gpiocon  = {.addr = 0x11, .value = 0x00, .is_volatile = false },
 };
 
-static uint8_t tx_buffer[5];  /* transmit up to 3 regs in one run */
-static uint8_t rx_buffer[5];
+static uint8_t tx_buffer[5];  /* transmit up to 3 bytes in one run */
+static uint8_t rx_buffer[5];  /* if enable STATUS or CRC byte, must be increased */
 
 void ads124s_test()
 {
   ads124s_read_reg(&ads124s_regs.status);
 }
 
+void ads124s_init()
+{
+  ads124s_reset();
+  delay_ms(2);  /* td(RSSC) = 4096 * tCLK */
+  ads124s_set_value(ads124s_fl_por, 0);
+  ads124s_update_matching_reg(ads124s_fl_por);
+}
+
 void ads124s_reset()
 {
-  ads124s_send_cmd(ads124s_cmd_reset);
-  delay_ms(2);  /* td(RSSC) in internal clk */
+  gpio_set_low(ads124s_pin_rst);
+  delay_us(50);  /* tw(RSL) = 4 * tCLK */
+  gpio_set_high(ads124s_pin_rst);
 }
 
 void ads124s_read_regs(ads124s_register* reg, uint8_t num)
@@ -42,6 +51,8 @@ void ads124s_read_regs(ads124s_register* reg, uint8_t num)
   tx_buffer[0] = ads124s_cmd_rreg | reg->addr;
   tx_buffer[1] = num - 1;         /* opcode 1 reg */
   tx_buffer[2] = ads124s_cmd_nop; /* dummy */
+  tx_buffer[3] = ads124s_cmd_nop; /* dummy */
+  tx_buffer[4] = ads124s_cmd_nop; /* dummy */
 
   ads124s_select();
 
@@ -72,12 +83,7 @@ void ads124s_write_regs(ads124s_register* reg, uint8_t num, uint8_t* data)
   ads124s_unselect();
 }
 
-void ads124s_update_reg(ads124s_register* reg)
+void ads124s_read_conv_data(uint32_t *conv_data)
 {
-  ads124s_write_reg(reg, reg->value);
-}
 
-void ads124s_performSystemOffsetCalibration()
-{
-  ads124s_send_cmd(ads124s_cmd_syocal);
 }

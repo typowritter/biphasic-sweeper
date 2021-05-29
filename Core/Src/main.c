@@ -97,20 +97,18 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   delay_init();
+  // ads124s_init();
+
   LED_SetColor(LED_G);
 
-  delay_ms(5);
-  ads124s_reset();
-  ads124s_set_value(ads124s_fl_por, 0);
-  ads124s_update_matching_reg(ads124s_fl_por);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    ads124s_test();
-    tty_print("ST = 0x%X\r\n", ads124s_regs.status.value);
+    // ads124s_test();
+    // tty_print("ST = 0x%X\r\n", ads124s_regs.status.value);
     delay_ms(1000);
     /* USER CODE END WHILE */
 

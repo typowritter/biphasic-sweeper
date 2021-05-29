@@ -97,7 +97,7 @@ DEF_REG_BIT(fl_ref_l0,        status,   1, 0);  // Reference voltage monitor fla
 DEF_REG_BIT(muxp,             inpmux,   4, 4);  // Positive ADC input selection
 DEF_REG_BIT(muxn,             inpmux,   4, 0);  // Negative ADC input selection
 
-DEF_REG_BIT(pga_conv_delay,   pga,      3, 5);  // Programmable conversion delay selection
+DEF_REG_BIT(conv_delay,       pga,      3, 5);  // Programmable conversion delay selection
 DEF_REG_BIT(pga_en,           pga,      2, 3);  // PGA enable
 DEF_REG_BIT(pga_gain,         pga,      3, 0);  // PGA gain selection
 
@@ -300,16 +300,16 @@ static INLINE uint8_t   ads124s_get_value(ads124s_register_bit field);
 static INLINE void      ads124s_read_reg(ads124s_register* reg);
 static INLINE void      ads124s_write_reg(ads124s_register* reg, uint8_t byte);
 static INLINE void      ads124s_send_cmd(uint8_t cmd);
+static INLINE void      ads124s_update_reg(ads124s_register* reg);
 static INLINE void      ads124s_update_matching_reg(ads124s_register_bit field);
+static INLINE void      ads124s_performSystemOffsetCalibration();
+static INLINE void      ads124s_performSystemGainCalibration();
+static INLINE void      ads124s_performSelfOffsetCalibration();
 
+void ads124s_init();
 void ads124s_test();
 void ads124s_reset();
-void ads124s_performSystemOffsetCalibration();
-void ads124s_performSystemGainCalibration();
-void ads124s_performSelfOffsetCalibration();
 void ads124s_read_conv_data(uint32_t *conv_data);
-void ads124s_update_reg(ads124s_register* reg);
-
 
 /**
  * reads multiple registers from device.
@@ -377,9 +377,33 @@ ads124s_send_cmd(uint8_t cmd)
 }
 
 static INLINE void
+ads124s_update_reg(ads124s_register* reg)
+{
+  ads124s_write_reg(reg, reg->value);
+}
+
+static INLINE void
 ads124s_update_matching_reg(ads124s_register_bit field)
 {
   ads124s_update_reg(field.reg);
+}
+
+static INLINE void
+ads124s_performSystemOffsetCalibration()
+{
+  ads124s_send_cmd(ads124s_cmd_syocal);
+}
+
+static INLINE void
+ads124s_performSystemGainCalibration()
+{
+  ads124s_send_cmd(ads124s_cmd_sygcal);
+}
+
+static INLINE void
+ads124s_performSelfOffsetCalibration()
+{
+  ads124s_send_cmd(ads124s_cmd_sfocal);
 }
 
 #ifdef  __cplusplus

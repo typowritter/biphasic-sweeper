@@ -14,8 +14,6 @@
 extern "C" {
 #endif
 
-#define __USE_HAL_DRIVER__
-
 #include "gpio.h"
 #include "utils.h"
 

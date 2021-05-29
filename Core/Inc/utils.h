@@ -24,7 +24,7 @@ extern "C" {
 /*
  * compound literals, supported since C99
  * see: 'https://en.cppreference.com/w/c/language/compound_literal'
-*/
+ */
 #define lit2addr(lit) (&(uint8_t){lit})
 
 
