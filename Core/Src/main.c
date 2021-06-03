@@ -22,14 +22,14 @@
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
-#include "gpio_wrapper.h"
+#include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "led.h"
 #include "tty.h"
 #include "delay.h"
-#include "ads124s0x.h"
+#include "ads1220.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -97,7 +97,7 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   delay_init();
-  // ads124s_init();
+  // ads1220_init();
 
   LED_SetColor(LED_G);
 
@@ -107,8 +107,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // ads124s_test();
-    // tty_print("ST = 0x%X\r\n", ads124s_regs.status.value);
+    // ads1220_test();
+    // tty_print("ST = 0x%X\r\n", ads1220_regs.status.value);
     delay_ms(1000);
     /* USER CODE END WHILE */
 
