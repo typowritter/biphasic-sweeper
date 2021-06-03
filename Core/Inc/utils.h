@@ -21,6 +21,8 @@ extern "C" {
 #define _str(s) #s
 #define str(s) _str(s)
 
+#define undefined Error_Handler
+
 /*
  * compound literals, supported since C99
  * see: 'https://en.cppreference.com/w/c/language/compound_literal'
