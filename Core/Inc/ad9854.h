@@ -109,133 +109,12 @@ typedef enum {
 } ad9854_cmd_t;
 
 typedef enum {
-  ad9854_chan_ain0   = 0x00,
-  ad9854_chan_ain1   = 0x01,
-  ad9854_chan_ain2   = 0x02,
-  ad9854_chan_ain3   = 0x03,
-  ad9854_chan_ain4   = 0x04,
-  ad9854_chan_ain5   = 0x05,
-  ad9854_chan_aincom = 0x0c,
-  /* ADS124S08 only channels */
-  ad9854_chan_ain6   = 0x06,
-  ad9854_chan_ain7   = 0x07,
-  ad9854_chan_ain8   = 0x08,
-  ad9854_chan_ain9   = 0x09,
-  ad9854_chan_ain10  = 0x0a,
-  ad9854_chan_ain11  = 0x0b,
-  /* For IDAC only */
-  ad9854_idac_off    = 0x0f,
-} ad9854_chan_t;
-
-typedef enum {
-  ad9854_conv_delay_x14    = 0x00,   // n * tMOD
-  ad9854_conv_delay_x25    = 0x01,
-  ad9854_conv_delay_x64    = 0x02,
-  ad9854_conv_delay_x256   = 0x03,
-  ad9854_conv_delay_x1024  = 0x04,
-  ad9854_conv_delay_x2048  = 0x05,
-  ad9854_conv_delay_x4096  = 0x06,
-  ad9854_conv_delay_x1     = 0x07,
-} ad9854_conv_delay_t;
-
-typedef enum {
-  ad9854_pga_gain_x1   = 0x00,
-  ad9854_pga_gain_x2   = 0x01,
-  ad9854_pga_gain_x4   = 0x02,
-  ad9854_pga_gain_x8   = 0x03,
-  ad9854_pga_gain_x16  = 0x04,
-  ad9854_pga_gain_x32  = 0x05,
-  ad9854_pga_gain_x64  = 0x06,
-  ad9854_pga_gain_x128 = 0x07,
-} ad9854_pga_gain_t;
-
-typedef enum {
-  ad9854_datarate_x2_5   = 0x00,
-  ad9854_datarate_x5     = 0x01,
-  ad9854_datarate_x10    = 0x02,
-  ad9854_datarate_x16_6  = 0x03,
-  ad9854_datarate_x20    = 0x04,
-  ad9854_datarate_x50    = 0x05,
-  ad9854_datarate_x60    = 0x06,
-  ad9854_datarate_x100   = 0x07,
-  ad9854_datarate_x200   = 0x08,
-  ad9854_datarate_x400   = 0x09,
-  ad9854_datarate_x800   = 0x0a,
-  ad9854_datarate_x1000  = 0x0b,
-  ad9854_datarate_x2000  = 0x0c,
-  ad9854_datarate_x4000  = 0x0d,
-} ad9854_datarate_t;
-
-typedef enum {
-  ad9854_refmon_disabled = 0x00,
-  ad9854_refmon_l0       = 0x01,
-  ad9854_refmon_l0_l1    = 0x02,
-  ad9854_refmon_l0_10m   = 0x03,
-} ad9854_refmon_t;
-
-typedef enum {
-  ad9854_refsel_p0n0     = 0x00,
-  ad9854_refsel_p1n1     = 0x01,
-  ad9854_refsel_internal = 0x02,
-} ad9854_refsel_t;
-
-typedef enum {
-  ad9854_refcon_off        = 0x00,
-  ad9854_refcon_pwrdwn     = 0x01,
-  ad9854_refcon_always_on  = 0x02,
-} ad9854_refcon_t;
-
-typedef enum {
-  ad9854_psw_open  = 0,
-  ad9854_psw_close = 1,
-} ad9854_psw_t;
-
-typedef enum {
-  ad9854_imag_off    = 0x00,
-  ad9854_imag_10mu   = 0x01,
-  ad9854_imag_50mu   = 0x02,
-  ad9854_imag_100mu  = 0x03,
-  ad9854_imag_250mu  = 0x04,
-  ad9854_imag_500mu  = 0x05,
-  ad9854_imag_750mu  = 0x06,
-  ad9854_imag_1000mu = 0x07,
-  ad9854_imag_1500mu = 0x08,
-  ad9854_imag_2000mu = 0x09,
-} ad9854_imag_t;
-
-typedef enum {
-  ad9854_vbias_div_2 = 0,
-  ad9854_vbias_div_12 = 1,
-} ad9854_vbias_t;
-
-typedef enum {
-  ad9854_sysmon_disabled       = 0x00,
-  ad9854_sysmon_pga_short      = 0x01,
-  ad9854_sysmon_temp_sensor    = 0x02,
-  ad9854_sysmon_avdd_avss_4    = 0x03,
-  ad9854_sysmon_dvdd_4         = 0x04,
-  ad9854_sysmon_burnout_0_2mu  = 0x05,
-  ad9854_sysmon_burnout_1mu    = 0x06,
-  ad9854_sysmon_burnout_10mu   = 0x07,
-} ad9854_sysmon_t;
-
-typedef enum {
-  ad9854_cal_sample_x1   = 0x00,
-  ad9854_cal_sample_x4   = 0x01,
-  ad9854_cal_sample_x8   = 0x02,
-  ad9854_cal_sample_x16  = 0x03,
-} ad9854_cal_sample_t;
-
-typedef enum {
-  ad9854_gpio_dir_out  = 0,
-  ad9854_gpio_dir_in   = 1,
-} ad9854_gpio_dir_t;
-
-typedef enum {
-  ad9854_gpio_conf_ain   = 0,
-  ad9854_gpio_conf_gpio  = 1,
-} ad9854_gpio_conf_t;
-
+  ad9854_mode_single    = 0x00,
+  ad9854_mode_fsk       = 0x01,
+  ad9854_mode_ramp_fsk  = 0x02,
+  ad9854_mode_chirp     = 0x03,
+  ad9854_mode_bpsk      = 0x04,
+} ad9854_mode_t;
 
 static INLINE void      ad9854_select();
 static INLINE void      ad9854_unselect();
@@ -246,9 +125,6 @@ static INLINE void      ad9854_write_reg(ad9854_register* reg, uint8_t byte);
 static INLINE void      ad9854_send_cmd(uint8_t cmd);
 static INLINE void      ad9854_update_reg(ad9854_register* reg);
 static INLINE void      ad9854_update_matching_reg(ad9854_register_bit field);
-static INLINE void      ad9854_performSystemOffsetCalibration();
-static INLINE void      ad9854_performSystemGainCalibration();
-static INLINE void      ad9854_performSelfOffsetCalibration();
 
 void ad9854_init();
 void ad9854_test();
@@ -284,21 +160,21 @@ ad9854_unselect()
 }
 
 static INLINE void
-ad9854_set_value(ad9854_register_bit field, uint8_t value)
+ad9854_set_value(ad9854_register_bit field, uint64_t value)
 {
   /* convert the numbers of bits in a mask with matching length */
-  const uint8_t mask = ((uint8_t)1 << field.bits) - 1;
+  const uint64_t mask = ((uint64_t)1 << field.bits) - 1;
   /* clear affected bits */
   field.reg->value &= ~(mask << field.offset);
   /* set affected bits */
   field.reg->value |= ((value & mask) << field.offset);
 }
 
-static INLINE uint8_t
+static INLINE uint64_t
 ad9854_get_value(ad9854_register_bit field)
 {
   /* convert the numbers of bits in a mask with matching length */
-  const uint8_t mask = ((uint8_t)1 << field.bits) - 1;
+  const uint64_t mask = ((uint64_t)1 << field.bits) - 1;
   return (field.reg->value >> field.offset) & mask;
 }
 
@@ -330,24 +206,6 @@ static INLINE void
 ad9854_update_matching_reg(ad9854_register_bit field)
 {
   ad9854_update_reg(field.reg);
-}
-
-static INLINE void
-ad9854_performSystemOffsetCalibration()
-{
-  ad9854_send_cmd(ad9854_cmd_syocal);
-}
-
-static INLINE void
-ad9854_performSystemGainCalibration()
-{
-  ad9854_send_cmd(ad9854_cmd_sygcal);
-}
-
-static INLINE void
-ad9854_performSelfOffsetCalibration()
-{
-  ad9854_send_cmd(ad9854_cmd_sfocal);
 }
 
 #ifdef  __cplusplus

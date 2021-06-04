@@ -28,9 +28,6 @@ void ads124s_test()
 void ads124s_init()
 {
   ads124s_reset();
-  delay_ms(2);  /* td(RSSC) = 4096 * tCLK */
-  ads124s_set_value(ads124s_fl_por, 0);
-  ads124s_update_matching_reg(ads124s_fl_por);
 }
 
 void ads124s_reset()
@@ -75,9 +72,4 @@ void ads124s_write_regs(ads124s_register* reg, uint8_t num, uint8_t* data)
   ads124s_select();
   HAL_SPI_Transmit(&ads124s_dev, tx_buffer, num+2, ads124s_spi_timeout);
   ads124s_unselect();
-}
-
-void ads124s_read_conv_data(uint32_t *conv_data)
-{
-  undefined();
 }
