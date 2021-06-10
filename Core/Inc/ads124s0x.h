@@ -46,8 +46,8 @@ typedef struct
 typedef struct
 {
   ads124s_register* reg;
-  int bits;
-  int offset;
+  uint8_t bits;
+  uint8_t offset;
 } ads124s_register_bit;
 
 typedef struct

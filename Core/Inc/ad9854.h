@@ -5,6 +5,12 @@
   * @date    2021-06-04
   * @brief   driver for ad9854
   ******************************************************************************
+  * @attention
+  *
+  * We use a custom board where the S/P SELECT pin is tied high
+  * so only the parallel mode is implemented
+  *
+  ******************************************************************************
   */
 
 #ifndef __AD9854_H
@@ -22,12 +28,13 @@ extern "C" {
 #define ad9854_spi_timeout 100000
 
 /* keep this synchronized with definitions in main.h */
-DEF_GPIO(ad9854_pin_rst,  AD9854_RST_GPIO_Port,  AD9854_RST_Pin);
-DEF_GPIO(ad9854_pin_cs,   AD9854_CS_GPIO_Port,   AD9854_CS_Pin);
-DEF_GPIO(ad9854_pin_sync, AD9854_SYNC_GPIO_Port, AD9854_SYNC_Pin);
-DEF_GPIO(ad9854_pin_drdy, AD9854_DRDY_GPIO_Port, AD9854_DRDY_Pin);
+DEF_GPIO(ad9854_pin_osk,  AD9854_OSK_GPIO_Port,  AD9854_OSK_Pin);
+DEF_GPIO(ad9854_pin_fsk,  AD9854_FSK_GPIO_Port,  AD9854_FSK_Pin);
+DEF_GPIO(ad9854_pin_udcl, AD9854_UDCL_GPIO_Port, AD9854_UDCL_Pin);
+DEF_GPIO_GROUP(ad9854_par_addr, GPIOJ, 6, 2);
+DEF_GPIO_GROUP(ad9854_par_data, GPIOJ, 8, 8);
 #undef DEF_GPIO
-
+#undef DEF_GPIO_GROUP
 
 typedef struct
 {

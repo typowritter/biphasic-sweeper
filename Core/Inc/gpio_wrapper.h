@@ -19,20 +19,34 @@ extern "C" {
 
 typedef struct
 {
-  GPIO_TypeDef* group;
+  GPIO_TypeDef* port;
   uint16_t pin;
 } gpio_pin;
 
-/* definition of all used GPIO ports */
-#define DEF_GPIO(name, _group, _pin) \
-  static const gpio_pin name = {.group = _group, .pin = _pin }
+typedef struct
+{
+  GPIO_TypeDef* port;
+  uint8_t bits;
+  uint8_t offset;
+} gpio_group;
+
+/* for fast definition */
+#define DEF_GPIO(name, _port, _pin) \
+  static const gpio_pin name = {.port = _port, .pin = _pin }
+
+#define DEF_GPIO_GROUP(name, _port, _bits, _offset) \
+  static const gpio_group name = {.port = _port,    \
+                                  .bits = _bits,    \
+                                  .offset = _offset }
 
 /* basic GPIO functions defined as inline to save call time */
 static INLINE void            gpio_set_high(gpio_pin pin);
 static INLINE void            gpio_set_low(gpio_pin pin);
 static INLINE void            gpio_toggle(gpio_pin pin);
-static INLINE void            gpio_set(gpio_pin pin, GPIO_PinState value);
-static INLINE GPIO_PinState   gpio_get(gpio_pin pin);
+static INLINE void            gpio_set(gpio_pin pin, uint8_t value);
+static INLINE uint8_t         gpio_get(gpio_pin pin);
+static INLINE void            gpio_set_group(gpio_group group, uint16_t value);
+static INLINE uint16_t        gpio_get_group(gpio_group group);
 
 
 /** implementation starts here */
@@ -40,37 +54,47 @@ static INLINE GPIO_PinState   gpio_get(gpio_pin pin);
 static INLINE void
 gpio_set_high(gpio_pin pin)
 {
-  HAL_GPIO_WritePin(pin.group, pin.pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(pin.port, pin.pin, GPIO_PIN_SET);
 }
 
 static INLINE void
 gpio_set_low(gpio_pin pin)
 {
-  HAL_GPIO_WritePin(pin.group, pin.pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(pin.port, pin.pin, GPIO_PIN_RESET);
 }
 
 static INLINE void
 gpio_toggle(gpio_pin pin)
 {
-  HAL_GPIO_TogglePin(pin.group, pin.pin);
+  HAL_GPIO_TogglePin(pin.port, pin.pin);
 }
 
 static INLINE void
-gpio_set(gpio_pin pin, GPIO_PinState value)
+gpio_set(gpio_pin pin, uint8_t value)
 {
-  if (value) {
-    gpio_set_high(pin);
-  } else {
-    gpio_set_low(pin);
-  }
+  HAL_GPIO_WritePin(pin.port, pin.pin, value);
 }
 
-static INLINE GPIO_PinState
+static INLINE uint8_t
 gpio_get(gpio_pin pin)
 {
-  return HAL_GPIO_ReadPin(pin.group, pin.pin);
+  return HAL_GPIO_ReadPin(pin.port, pin.pin);
 }
 
+static INLINE void
+gpio_set_group(gpio_group group, uint16_t value)
+{
+  const uint16_t mask = ((uint16_t)1 << group.bits) - 1;
+  group.port->BSRR = ((mask & value) | ((mask & ~value) << 16)) << group.offset;
+}
+
+
+static INLINE uint16_t
+gpio_get_group(gpio_group group)
+{
+  const uint16_t mask = ((uint16_t)1 << group.bits) - 1;
+  return mask & (group.port->IDR >> group.offset);
+}
 
 #ifdef  __cplusplus
 }
