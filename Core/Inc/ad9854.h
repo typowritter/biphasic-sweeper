@@ -8,7 +8,8 @@
   * @attention
   *
   * We use a custom board where the S/P SELECT pin is tied high
-  * so only the parallel mode is implemented
+  * so the serial mode is not implemented
+  * Also not the reg-read function.
   *
   ******************************************************************************
   */
@@ -28,9 +29,10 @@ extern "C" {
 #define ad9854_spi_timeout 100000
 
 /* keep this synchronized with definitions in main.h */
-DEF_GPIO(ad9854_pin_osk,  AD9854_OSK_GPIO_Port,  AD9854_OSK_Pin);
-DEF_GPIO(ad9854_pin_fsk,  AD9854_FSK_GPIO_Port,  AD9854_FSK_Pin);
-DEF_GPIO(ad9854_pin_udcl, AD9854_UDCL_GPIO_Port, AD9854_UDCL_Pin);
+DEF_GPIO(ad9854_pin_wr,    AD9854_WR_GPIO_Port,   AD9854_WR_Pin);
+DEF_GPIO(ad9854_pin_osk,   AD9854_OSK_GPIO_Port,  AD9854_OSK_Pin);
+DEF_GPIO(ad9854_pin_fsk,   AD9854_FSK_GPIO_Port,  AD9854_FSK_Pin);
+DEF_GPIO(ad9854_pin_udclk, AD9854_UDCL_GPIO_Port, AD9854_UDCL_Pin);
 DEF_GPIO_GROUP(ad9854_par_addr, GPIOJ, 6, 2);
 DEF_GPIO_GROUP(ad9854_par_data, GPIOJ, 8, 8);
 #undef DEF_GPIO
@@ -39,7 +41,9 @@ DEF_GPIO_GROUP(ad9854_par_data, GPIOJ, 8, 8);
 typedef struct
 {
   /* the physical serial address in the chip */
-  const uint8_t addr;
+  const uint8_t s_addr;
+  /* the physical parallel address in the chip */
+  const uint8_t p_addr;
   /* the current value stored locally for transmission */
   uint64_t value;
   /* number of bytes of the register */
@@ -101,21 +105,6 @@ DEF_REG_BIT(sdo_cr,        cr, 1, 0);
 #undef DEF_REG_BIT
 
 typedef enum {
-  ad9854_cmd_nop     = 0x00,
-  ad9854_cmd_wakeup  = 0x02,
-  ad9854_cmd_pwrdwn  = 0x04,
-  ad9854_cmd_reset   = 0x06,
-  ad9854_cmd_start   = 0x08,
-  ad9854_cmd_stop    = 0x0a,
-  ad9854_cmd_syocal  = 0x16,
-  ad9854_cmd_sygcal  = 0x17,
-  ad9854_cmd_sfocal  = 0x19,
-  ad9854_cmd_rdata   = 0x12,
-  ad9854_cmd_rreg    = 0x20,
-  ad9854_cmd_wreg    = 0x40,
-} ad9854_cmd_t;
-
-typedef enum {
   ad9854_mode_single    = 0x00,
   ad9854_mode_fsk       = 0x01,
   ad9854_mode_ramp_fsk  = 0x02,
@@ -123,51 +112,44 @@ typedef enum {
   ad9854_mode_bpsk      = 0x04,
 } ad9854_mode_t;
 
+typedef enum {
+  ad9854_updclk_external = 0,
+  ad9854_updclk_internal = 1,
+} ad9854_updclk_t;
+
 static INLINE void      ad9854_select();
 static INLINE void      ad9854_unselect();
-static INLINE void      ad9854_set_value(ad9854_register_bit field, uint8_t value);
-static INLINE uint8_t   ad9854_get_value(ad9854_register_bit field);
-static INLINE void      ad9854_read_reg(ad9854_register* reg);
-static INLINE void      ad9854_write_reg(ad9854_register* reg, uint8_t byte);
-static INLINE void      ad9854_send_cmd(uint8_t cmd);
+static INLINE void      ad9854_set_bits(ad9854_register_bit field, uint8_t value);
+static INLINE uint8_t   ad9854_get_bits(ad9854_register_bit field);
 static INLINE void      ad9854_update_reg(ad9854_register* reg);
-static INLINE void      ad9854_update_matching_reg(ad9854_register_bit field);
+static INLINE void      ad9854_update_bits(ad9854_register_bit field);
 
 void ad9854_init();
-void ad9854_test();
 void ad9854_reset();
-void ad9854_read_conv_data(uint32_t *conv_data);
 
-/**
- * reads multiple registers from device.
- *
- * @param reg   -- the first register to read
- * @param num   -- number of registers to read
- * @param data  -- buffer for received bytes,
-                   should at least have a length of num
- *
- * @note: global struct ad9854_regs WILL be updated
- */
-void ad9854_read_regs(ad9854_register* reg, uint8_t num);
-
-void ad9854_write_regs(ad9854_register* reg, uint8_t num, uint8_t* data);
-
+/* parallel */
+uint8_t ad9854_read_byte(uint8_t addr);
+uint64_t ad9854_read_parallel(ad9854_register* reg);
+void ad9854_write_byte(uint8_t addr, uint8_t data);
+void ad9854_write_parallel(ad9854_register* reg, uint64_t value);
 
 /** implementation starts here */
 static INLINE void
 ad9854_select()
 {
-  gpio_set_low(ad9854_pin_cs);
+  // gpio_set_low(ad9854_pin_cs);
+  undefined();
 }
 
 static INLINE void
 ad9854_unselect()
 {
-  gpio_set_high(ad9854_pin_cs);
+  // gpio_set_high(ad9854_pin_cs);
+  undefined();
 }
 
 static INLINE void
-ad9854_set_value(ad9854_register_bit field, uint64_t value)
+ad9854_set_bits(ad9854_register_bit field, uint64_t value)
 {
   /* convert the numbers of bits in a mask with matching length */
   const uint64_t mask = ((uint64_t)1 << field.bits) - 1;
@@ -178,7 +160,7 @@ ad9854_set_value(ad9854_register_bit field, uint64_t value)
 }
 
 static INLINE uint64_t
-ad9854_get_value(ad9854_register_bit field)
+ad9854_get_bits(ad9854_register_bit field)
 {
   /* convert the numbers of bits in a mask with matching length */
   const uint64_t mask = ((uint64_t)1 << field.bits) - 1;
@@ -186,31 +168,13 @@ ad9854_get_value(ad9854_register_bit field)
 }
 
 static INLINE void
-ad9854_read_reg(ad9854_register* reg)
-{
-  ad9854_read_regs(reg, 1);
-}
-
-static INLINE void
-ad9854_write_reg(ad9854_register* reg, uint8_t byte)
-{
-  ad9854_write_regs(reg, 1, lit2addr(byte));
-}
-
-static INLINE void
-ad9854_send_cmd(uint8_t cmd)
-{
-  HAL_SPI_Transmit(&ad9854_dev, lit2addr(cmd), 1, ad9854_spi_timeout);
-}
-
-static INLINE void
 ad9854_update_reg(ad9854_register* reg)
 {
-  ad9854_write_reg(reg, reg->value);
+  ad9854_write_parallel(reg, reg->value);
 }
 
 static INLINE void
-ad9854_update_matching_reg(ad9854_register_bit field)
+ad9854_update_bits(ad9854_register_bit field)
 {
   ad9854_update_reg(field.reg);
 }
