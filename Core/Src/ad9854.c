@@ -39,6 +39,21 @@ void ad9854_reset()
   gpio_set_low(ad9854_pin_rst);
 }
 
+void freq_convert(uint64_t freq)
+{
+  /* FTW = (freq × 2^N)/SYSCLK */
+  ad9854_regs.ftw1.value = freq * ((1<<48)/ad9854_sysclk);
+  ad9854_update_reg(&ad9854_regs.ftw1);
+}
+
+void amp_convert(uint16_t amp)
+{
+  ad9854_regs.osk_i_mult.value = amp;
+  ad9854_regs.osk_q_mult.value = amp;
+  ad9854_update_reg(&ad9854_regs.osk_i_mult.value);
+  ad9854_update_reg(&ad9854_regs.osk_q_mult.value);
+}
+
 uint8_t ad9854_read_byte(uint8_t addr)
 {
   undefined();

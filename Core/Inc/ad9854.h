@@ -21,12 +21,13 @@
 extern "C" {
 #endif
 
+// #include "spi.h"
 #include "gpio_wrapper.h"
-#include "spi.h"
 #include "utils.h"
 
 #define ad9854_dev         hspi3
 #define ad9854_spi_timeout 100000
+#define ad9854_sysclk      25000000
 
 /* keep this synchronized with definitions in main.h */
 DEF_GPIO(ad9854_pin_wr,    AD9854_WR_GPIO_Port,   AD9854_WR_Pin);
@@ -126,6 +127,8 @@ static INLINE void      ad9854_update_bits(ad9854_register_bit field);
 
 void ad9854_init();
 void ad9854_reset();
+void freq_convert(uint64_t freq);
+void amp_convert(uint16_t amp);
 
 /* parallel */
 uint8_t ad9854_read_byte(uint8_t addr);
