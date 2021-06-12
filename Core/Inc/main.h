@@ -68,6 +68,8 @@ void Error_Handler(void);
 #define AD9854_D7_GPIO_Port GPIOJ
 #define ADS1220_DRDY_Pin GPIO_PIN_3
 #define ADS1220_DRDY_GPIO_Port GPIOD
+#define AD9854_RST_Pin GPIO_PIN_12
+#define AD9854_RST_GPIO_Port GPIOG
 #define ADS1220_CS_Pin GPIO_PIN_5
 #define ADS1220_CS_GPIO_Port GPIOE
 #define TEST_OUTPUT_Pin GPIO_PIN_7

@@ -34,9 +34,9 @@ void ad9854_init()
 
 void ad9854_reset()
 {
-  // gpio_set_high(ad9854_pin_rst);
-  // delay_us(1);  /* 10 sysclk */
-  // gpio_set_low(ad9854_pin_rst);
+  gpio_set_high(ad9854_pin_rst);
+  delay_us(1);  /* 10 sysclk */
+  gpio_set_low(ad9854_pin_rst);
 }
 
 void freq_convert(uint64_t freq)
