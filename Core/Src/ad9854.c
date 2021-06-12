@@ -34,15 +34,15 @@ void ad9854_init()
 
 void ad9854_reset()
 {
-  gpio_set_high(ad9854_pin_rst);
-  delay_us(1);  /* 10 sysclk */
-  gpio_set_low(ad9854_pin_rst);
+  // gpio_set_high(ad9854_pin_rst);
+  // delay_us(1);  /* 10 sysclk */
+  // gpio_set_low(ad9854_pin_rst);
 }
 
 void freq_convert(uint64_t freq)
 {
   /* FTW = (freq × 2^N)/SYSCLK */
-  ad9854_regs.ftw1.value = freq * ((1<<48)/ad9854_sysclk);
+  ad9854_regs.ftw1.value = freq * (((uint64_t)1<<48)/ad9854_sysclk);
   ad9854_update_reg(&ad9854_regs.ftw1);
 }
 
@@ -50,13 +50,14 @@ void amp_convert(uint16_t amp)
 {
   ad9854_regs.osk_i_mult.value = amp;
   ad9854_regs.osk_q_mult.value = amp;
-  ad9854_update_reg(&ad9854_regs.osk_i_mult.value);
-  ad9854_update_reg(&ad9854_regs.osk_q_mult.value);
+  ad9854_update_reg(&ad9854_regs.osk_i_mult);
+  ad9854_update_reg(&ad9854_regs.osk_q_mult);
 }
 
 uint8_t ad9854_read_byte(uint8_t addr)
 {
   undefined();
+  return whatever;
 }
 
 void ad9854_write_byte(uint8_t addr, uint8_t data)
@@ -73,6 +74,7 @@ void ad9854_write_byte(uint8_t addr, uint8_t data)
 uint64_t ad9854_read_parallel(ad9854_register* reg)
 {
   undefined();
+  return whatever;
 }
 
 void ad9854_write_parallel(ad9854_register* reg, uint64_t value)

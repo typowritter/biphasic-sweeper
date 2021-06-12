@@ -29,7 +29,8 @@
 #include "led.h"
 #include "tty.h"
 #include "delay.h"
-#include "ads1220.h"
+// #include "ads1220.h"
+#include "ad9854.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -97,9 +98,12 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   delay_init();
+  ad9854_init();
   // ads1220_init();
 
   LED_SetColor(LED_G);
+  freq_convert(100000);
+  amp_convert(2000);
 
   /* USER CODE END 2 */
 

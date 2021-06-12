@@ -27,7 +27,7 @@ extern "C" {
 
 #define ad9854_dev         hspi3
 #define ad9854_spi_timeout 100000
-#define ad9854_sysclk      25000000
+#define ad9854_sysclk      30000000
 
 /* keep this synchronized with definitions in main.h */
 DEF_GPIO(ad9854_pin_wr,    AD9854_WR_GPIO_Port,   AD9854_WR_Pin);
@@ -152,21 +152,21 @@ ad9854_unselect()
 }
 
 static INLINE void
-ad9854_set_bits(ad9854_register_bit field, uint64_t value)
+ad9854_set_bits(ad9854_register_bit field, uint8_t value)
 {
   /* convert the numbers of bits in a mask with matching length */
-  const uint64_t mask = ((uint64_t)1 << field.bits) - 1;
+  const uint32_t mask = ((uint32_t)1 << field.bits) - 1;
   /* clear affected bits */
   field.reg->value &= ~(mask << field.offset);
   /* set affected bits */
   field.reg->value |= ((value & mask) << field.offset);
 }
 
-static INLINE uint64_t
+static INLINE uint8_t
 ad9854_get_bits(ad9854_register_bit field)
 {
   /* convert the numbers of bits in a mask with matching length */
-  const uint64_t mask = ((uint64_t)1 << field.bits) - 1;
+  const uint8_t mask = ((uint8_t)1 << field.bits) - 1;
   return (field.reg->value >> field.offset) & mask;
 }
 

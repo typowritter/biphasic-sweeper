@@ -88,7 +88,6 @@ gpio_set_group(gpio_group group, uint16_t value)
   group.port->BSRR = ((mask & value) | ((mask & ~value) << 16)) << group.offset;
 }
 
-
 static INLINE uint16_t
 gpio_get_group(gpio_group group)
 {

@@ -22,6 +22,7 @@ extern "C" {
 #define str(s) _str(s)
 
 #define undefined Error_Handler
+#define whatever  0
 
 /*
  * compound literals, supported since C99
