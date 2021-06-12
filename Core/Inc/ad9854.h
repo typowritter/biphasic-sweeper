@@ -24,6 +24,7 @@ extern "C" {
 #pragma GCC diagnostic ignored "-Wunused-const-variable"
 #pragma GCC diagnostic ignored "-Wunused-function"
 
+#include "main.h"
 // #include "spi.h"
 #include "gpio_wrapper.h"
 #include "utils.h"

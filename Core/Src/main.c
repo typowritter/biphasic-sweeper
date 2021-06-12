@@ -103,7 +103,6 @@ int main(void)
 
   LED_SetColor(LED_G);
   freq_convert(100000);
-  amp_convert(2000);
 
   /* USER CODE END 2 */
 

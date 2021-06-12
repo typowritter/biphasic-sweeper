@@ -27,6 +27,8 @@ void ad9854_init()
 
   ad9854_set_bits(ad9854_updclk, ad9854_updclk_external);
   ad9854_set_bits(ad9854_mode, ad9854_mode_single);
+  ad9854_set_bits(ad9854_invsinc_byp, 1);
+  ad9854_set_bits(ad9854_osk_en, 0);
   ad9854_update_reg(&ad9854_regs.cr);
 
   delay_ms(10);
@@ -48,6 +50,7 @@ void freq_convert(uint64_t freq)
 
 void amp_convert(uint16_t amp)
 {
+  /* 12-bit, 0~4095 */
   ad9854_regs.osk_i_mult.value = amp;
   ad9854_regs.osk_q_mult.value = amp;
   ad9854_update_reg(&ad9854_regs.osk_i_mult);
