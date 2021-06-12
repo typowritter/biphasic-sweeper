@@ -20,6 +20,9 @@
 #ifdef  __cplusplus
 extern "C" {
 #endif
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-const-variable"
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 // #include "spi.h"
 #include "gpio_wrapper.h"
@@ -183,6 +186,7 @@ ad9854_update_bits(ad9854_register_bit field)
   ad9854_update_reg(field.reg);
 }
 
+#pragma GCC diagnostic pop
 #ifdef  __cplusplus
 }
 #endif

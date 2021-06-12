@@ -13,6 +13,8 @@
 #ifdef  __cplusplus
 extern "C" {
 #endif
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 #include "gpio.h"
 #include "utils.h"
@@ -95,6 +97,7 @@ gpio_get_group(gpio_group group)
   return mask & (group.port->IDR >> group.offset);
 }
 
+#pragma GCC diagnostic push
 #ifdef  __cplusplus
 }
 #endif
