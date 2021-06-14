@@ -34,8 +34,8 @@ extern "C" {
 #define ad9854_sysclk      30000000
 
 /* keep this synchronized with definitions in main.h */
-DEF_GPIO(ad9854_pin_rst,   AD9854_RST_GPIO_Port,  AD9854_RST_Pin);
 DEF_GPIO(ad9854_pin_wr,    AD9854_WR_GPIO_Port,   AD9854_WR_Pin);
+DEF_GPIO(ad9854_pin_rst,   AD9854_RST_GPIO_Port,  AD9854_RST_Pin);
 DEF_GPIO(ad9854_pin_osk,   AD9854_OSK_GPIO_Port,  AD9854_OSK_Pin);
 DEF_GPIO(ad9854_pin_fsk,   AD9854_FSK_GPIO_Port,  AD9854_FSK_Pin);
 DEF_GPIO(ad9854_pin_udclk, AD9854_UDCL_GPIO_Port, AD9854_UDCL_Pin);
