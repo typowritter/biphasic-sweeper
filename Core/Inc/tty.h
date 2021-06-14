@@ -16,6 +16,11 @@
 #ifndef __TTY_H
 #define	__TTY_H
 
+#ifdef  __cplusplus
+extern "C" {
+#endif
+#pragma GCC diagnostic ignored "-Wformat"
+
 #include "usart.h"
 #include <stdio.h>
 
@@ -57,4 +62,8 @@ void putstr(char *ptr);
 void readstr(char *ptr, size_t buflen);
 void readu32(uint32_t *uint32);
 
+
+#ifdef  __cplusplus
+}
+#endif
 #endif /* __TTY_H */
