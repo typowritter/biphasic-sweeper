@@ -18,17 +18,14 @@ char STRBUF[READSTR_MAX_BUFSIZE];
 
 PUTCHAR_PROTOTYPE
 {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
-    HAL_UART_Transmit(&usart_dev, &ch, 1, 0xFFFF);
-#pragma GCC diagnostic pop
+    HAL_UART_Transmit(&usart_dev, (uint8_t *)&ch, 1, 0xFFFF);
     return ch;
 }
 
 GETCHAR_PROTOTYPE
 {
-    uint8_t ch;
-    HAL_UART_Receive(&usart_dev, &ch, 1, 0xFFFF);
+    int ch;
+    HAL_UART_Receive(&usart_dev, (uint8_t *)&ch, 1, 0xFFFF);
     return ch;
 }
 
