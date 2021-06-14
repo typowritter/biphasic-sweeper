@@ -39,7 +39,6 @@ C_SOURCES =  \
 Core/Src/main.c \
 Core/Src/led.c \
 Core/Src/tty.c \
-Core/Src/delay.c \
 Core/Src/ad9854.c \
 Core/Src/gpio.c \
 Core/Src/stm32h7xx_it.c \
