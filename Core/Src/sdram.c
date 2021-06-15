@@ -113,7 +113,7 @@ void sdram_read(uint32_t* p_buffer, uint32_t r_addr, uint32_t r_size)
   }
 }
 
-#ifdef DEBUG
+#ifdef TEST_SDRAM
 #include "tty.h"
 #include "utils.h"
 #define sdram_msg(...) DEBUG_GEN(tty_print, "SDRAM: ", __VA_ARGS__)
