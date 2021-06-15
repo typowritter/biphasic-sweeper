@@ -38,6 +38,7 @@ extern "C" {
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
 
+extern __IO uint32_t *sdram_base_addr;
 
 /* this should be called after FMC is initialized */
 void sdram_init();

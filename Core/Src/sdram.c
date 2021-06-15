@@ -9,7 +9,7 @@
 
 #include "sdram.h"
 
-static __IO uint32_t *sdram_base_addr = (uint32_t *)SDRAM_BANK_ADDR;
+__IO uint32_t *sdram_base_addr = (uint32_t *)SDRAM_BANK_ADDR;
 
 void sdram_init()
 {
