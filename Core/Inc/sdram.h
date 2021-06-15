@@ -60,6 +60,7 @@ void sdram_write(uint32_t* p_buffer, uint32_t w_addr, uint32_t w_size);
  */
 void sdram_read(uint32_t* p_buffer, uint32_t r_addr, uint32_t r_size);
 
+/* sdram read and write test */
 void sdram_test();
 
 #ifdef  __cplusplus

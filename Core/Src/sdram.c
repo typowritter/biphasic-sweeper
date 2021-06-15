@@ -8,7 +8,6 @@
   */
 
 #include "sdram.h"
-#include "tty.h"
 
 static __IO uint32_t *sdram_base_addr = (uint32_t *)SDRAM_BANK_ADDR;
 
@@ -114,6 +113,11 @@ void sdram_read(uint32_t* p_buffer, uint32_t r_addr, uint32_t r_size)
   }
 }
 
+#ifdef DEBUG
+#include "tty.h"
+#include "utils.h"
+#define sdram_msg(...) DEBUG_GEN(tty_print, "SDRAM: ", __VA_ARGS__)
+
 void sdram_test()
 {
   uint32_t testdata[16] = {
@@ -133,11 +137,18 @@ void sdram_test()
   {
     if (testdata[i] != read_buffer[i])
     {
-      tty_print("Mismatch on [%d] = %x, expecting %x\r\n",
+      sdram_msg("mismatch on [%02d] = 0x%x, expecting 0x%x\r\n",
                 i, read_buffer[i], testdata[i]);
       err++;
     }
   }
 
-  tty_print("errors: %d\r\n", err);
+  sdram_msg("errors = %d\r\n", err);
 }
+
+#else
+void sdram_test()
+{
+}
+
+#endif
