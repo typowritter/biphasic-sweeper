@@ -81,26 +81,34 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     /* SPI1 clock enable */
     __HAL_RCC_SPI1_CLK_ENABLE();
 
-    __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOG_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOD_CLK_ENABLE();
     /**SPI1 GPIO Configuration
-    PB5     ------> SPI1_MOSI
     PG9     ------> SPI1_MISO
-    PG11     ------> SPI1_SCK
+    PB3 (JTDO/TRACESWO)     ------> SPI1_SCK
+    PD7     ------> SPI1_MOSI
     */
+    GPIO_InitStruct.Pin = SPI1_MISO_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+    HAL_GPIO_Init(SPI1_MISO_GPIO_Port, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = SPI1_SCK_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+    HAL_GPIO_Init(SPI1_SCK_GPIO_Port, &GPIO_InitStruct);
+
     GPIO_InitStruct.Pin = SPI1_MOSI_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
     HAL_GPIO_Init(SPI1_MOSI_GPIO_Port, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = SPI1_MISO_Pin|SPI1_SCK_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-    HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
   /* USER CODE BEGIN SPI1_MspInit 1 */
 
@@ -120,13 +128,15 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
     __HAL_RCC_SPI1_CLK_DISABLE();
 
     /**SPI1 GPIO Configuration
-    PB5     ------> SPI1_MOSI
     PG9     ------> SPI1_MISO
-    PG11     ------> SPI1_SCK
+    PB3 (JTDO/TRACESWO)     ------> SPI1_SCK
+    PD7     ------> SPI1_MOSI
     */
-    HAL_GPIO_DeInit(SPI1_MOSI_GPIO_Port, SPI1_MOSI_Pin);
+    HAL_GPIO_DeInit(SPI1_MISO_GPIO_Port, SPI1_MISO_Pin);
 
-    HAL_GPIO_DeInit(GPIOG, SPI1_MISO_Pin|SPI1_SCK_Pin);
+    HAL_GPIO_DeInit(SPI1_SCK_GPIO_Port, SPI1_SCK_Pin);
+
+    HAL_GPIO_DeInit(SPI1_MOSI_GPIO_Port, SPI1_MOSI_Pin);
 
   /* USER CODE BEGIN SPI1_MspDeInit 1 */
 

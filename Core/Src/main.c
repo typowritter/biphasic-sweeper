@@ -19,6 +19,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma2d.h"
+#include "ltdc.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -28,11 +30,12 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "led.h"
+#include "lcd.h"
 #include "tty.h"
 #include "sdram.h"
 #include "delay.h"
 // #include "ads1220.h"
-#include "ad9854.h"
+// #include "ad9854.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -103,15 +106,18 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM6_Init();
   MX_FMC_Init();
+  MX_LTDC_Init();
+  MX_DMA2D_Init();
   /* USER CODE BEGIN 2 */
   sdram_init();
+  lcd_init();
   delay_init();
-  ad9854_init();
+  // ad9854_init();
   // ads1220_init();
 
   LED_SetColor(LED_G);
-  freq_convert(100000);
-  sdram_test();
+  // freq_convert(100000);
+  // sdram_test();
 
   /* USER CODE END 2 */
 
