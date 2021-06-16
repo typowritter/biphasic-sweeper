@@ -18,15 +18,18 @@ extern "C" {
 #include "spi.h"
 #include "utils.h"
 
+/* BEGIN project specific setups
+ * keep those synchronized with global settings */
 #define ads124s_dev         hspi1
 #define ads124s_spi_timeout 100000
-
-/* keep this synchronized with definitions in main.h */
 DEF_GPIO(ads124s_pin_rst,  ADS124S_RST_GPIO_Port,  ADS124S_RST_Pin);
 DEF_GPIO(ads124s_pin_cs,   ADS124S_CS_GPIO_Port,   ADS124S_CS_Pin);
 DEF_GPIO(ads124s_pin_sync, ADS124S_SYNC_GPIO_Port, ADS124S_SYNC_Pin);
 DEF_GPIO(ads124s_pin_drdy, ADS124S_DRDY_GPIO_Port, ADS124S_DRDY_Pin);
 #undef DEF_GPIO
+
+/* END project specific setups */
+
 
 enum ads124s_id {
   ADS124S08_ID,

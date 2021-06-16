@@ -29,11 +29,12 @@ extern "C" {
 #include "gpio_wrapper.h"
 #include "utils.h"
 
+/* BEGIN project specific setups
+ * keep those synchronized with global settings */
 #define ad9854_dev         hspi3
 #define ad9854_spi_timeout 100000
 #define ad9854_sysclk      30000000
 
-/* keep this synchronized with definitions in main.h */
 DEF_GPIO(ad9854_pin_wr,    AD9854_WR_GPIO_Port,   AD9854_WR_Pin);
 DEF_GPIO(ad9854_pin_rst,   AD9854_RST_GPIO_Port,  AD9854_RST_Pin);
 DEF_GPIO(ad9854_pin_osk,   AD9854_OSK_GPIO_Port,  AD9854_OSK_Pin);
@@ -43,6 +44,9 @@ DEF_GPIO_GROUP(ad9854_par_addr, GPIOJ, 6, 2);
 DEF_GPIO_GROUP(ad9854_par_data, GPIOJ, 8, 8);
 #undef DEF_GPIO
 #undef DEF_GPIO_GROUP
+
+/* END project specific setups */
+
 
 typedef struct
 {

@@ -18,13 +18,16 @@ extern "C" {
 #include "spi.h"
 #include "utils.h"
 
+/* BEGIN project specific setups
+ * keep those synchronized with global settings */
 #define ads1220_dev         hspi1
 #define ads1220_spi_timeout 100000
-
-/* keep this synchronized with definitions in main.h */
 DEF_GPIO(ads1220_pin_cs,   ADS1220_CS_GPIO_Port,   ADS1220_CS_Pin);
 DEF_GPIO(ads1220_pin_drdy, ADS1220_DRDY_GPIO_Port, ADS1220_DRDY_Pin);
 #undef DEF_GPIO
+
+/* END project specific setups */
+
 
 typedef struct
 {
