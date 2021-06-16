@@ -32,7 +32,6 @@
 #include "led.h"
 #include "lcd.h"
 #include "tty.h"
-#include "sdram.h"
 #include "delay.h"
 // #include "ads1220.h"
 // #include "ad9854.h"
@@ -109,7 +108,7 @@ int main(void)
   MX_LTDC_Init();
   MX_DMA2D_Init();
   /* USER CODE BEGIN 2 */
-  sdram_init();
+
   lcd_init();
   delay_init();
   // ad9854_init();
@@ -117,7 +116,6 @@ int main(void)
 
   LED_SetColor(LED_G);
   // freq_convert(100000);
-  // sdram_test();
 
   /* USER CODE END 2 */
 
