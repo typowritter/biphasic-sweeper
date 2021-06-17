@@ -118,6 +118,30 @@ void disp_char(uint16_t x, uint16_t y, char ch)
 }
 
 /**
+ * display a string on (x,y)
+ */
+void disp_string(uint16_t x, uint16_t y, char *str)
+{
+  while (*str != '\0')
+  {
+    if (x + lcd.font->width > lcd.width)
+    {
+      x = 0;
+      y += lcd.font->height;
+    }
+
+    if (y + lcd.font->height > lcd.height)
+    {
+      x = 0;
+      y = 0;
+    }
+
+    disp_char(x, y, *str++);
+    x += lcd.font->width;
+  }
+}
+
+/**
  * draw an arbitrary skewed line, using Bresenham algorithm
  */
 void draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
