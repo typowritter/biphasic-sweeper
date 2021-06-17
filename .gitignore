@@ -1,3 +1,4 @@
 build
 .mxproject
 .clangd
+compile_commands.json
