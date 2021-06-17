@@ -14,14 +14,18 @@
 #ifdef  __cplusplus
 extern "C" {
 #endif
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 #include "ltdc.h"
 #include "dma2d.h"
+#include "sdram.h"
 #include "fonts.h"
+#include "utils.h"
 
 /* BEGIN project specific setups
  * keep those synchronized with global settings */
-#define DMA2D_COLOR_MODE   DMA2D_OUTPUT_RGB565
+#define OUTPUT_COLOR_MODE  DMA2D_OUTPUT_RGB565
 #define MAX_LAYERS         1 /* one layer */
 
 /* we use RGB888 internally, DMA2D will do the conversion on output */
@@ -29,6 +33,16 @@ typedef uint32_t color_t;
 typedef uint32_t vmem_addr_t; /* video memory address */
 
 /* END project specific setups */
+
+#define VRAM_PLANE       0
+#define FONTCACHE_PLANE  1
+#define MISC_PLANE       2
+
+#define pos2addr(x, y) \
+  (SDRAM_BANK_ADDR + sizeof(color_t) * ((lcd.width) * (y) + (x)))
+
+#define get_plane_addr(plane) \
+  (SDRAM_BANK_ADDR + (plane) * sizeof(color_t) * lcd.width * lcd.height)
 
 enum rgb888_enum {
   aqua       = 0x00ffff,
@@ -69,12 +83,94 @@ typedef struct
   color_t  back_color;
 } lcd_configs_t;
 
+
+/* global struct of the lcd */
+extern lcd_configs_t lcd;
+
+static INLINE void     lcd_init();
+static INLINE void     lcd_clear();
+static INLINE void     draw_hline(uint16_t x, uint16_t y, uint16_t len);
+static INLINE void     draw_vline(uint16_t x, uint16_t y, uint16_t len);
+static INLINE void     draw_pixel(uint16_t x, uint16_t y, color_t color);
+static INLINE uint16_t to_rgb565(color_t rgb888);
+
 /**
- * initialize lcd display
+ * fill a rectangular region
+ *
+ * @param x,y     -- start position
+ * @param w,h     -- width & height
+ * @param color   -- color to fill
  */
-void lcd_init();
+void fill_region(uint16_t x, uint16_t y, uint16_t w, uint16_t h, color_t color);
+
+/**
+ * draw a RGB88 bitmap
+ *
+ * @param x,y     -- start position
+ * @param w,h     -- width & height
+ * @param bitmap  -- address of RGB888 bitmap
+ */
+void draw_bitmap(uint16_t x, uint16_t y, uint16_t w, uint16_t h, vmem_addr_t bitmap);
+
+/**
+ * display a character on (x,y)
+ */
+void disp_char(uint16_t x, uint16_t y, char ch);
 
 
+/** implementation starts here */
+static INLINE void
+lcd_init()
+{
+  sdram_init(); /* use sdram as video memory */
+  lcd_clear();
+}
+
+static INLINE void
+lcd_clear()
+{
+  fill_region(0, 0, lcd.width, lcd.height, lcd.back_color);
+}
+
+/**
+ * draw a horizontal line
+ *
+ * @param x,y  -- start position
+ * @param len  -- length of the line
+ */
+static INLINE void
+draw_hline(uint16_t x, uint16_t y, uint16_t len)
+{
+  fill_region(x, y, len, 1, lcd.fore_color);
+}
+
+/**
+ * draw a vertical line
+ *
+ * @param x,y  -- start position
+ * @param len  -- length of the line
+ */
+static INLINE void
+draw_vline(uint16_t x, uint16_t y, uint16_t len)
+{
+  fill_region(x, y, 1, len, lcd.fore_color);
+}
+
+static INLINE void
+draw_pixel(uint16_t x, uint16_t y, color_t color)
+{
+  *(color_t *) pos2addr(x, y) = to_rgb565(color);
+}
+
+static INLINE uint16_t
+to_rgb565(color_t rgb888)
+{
+  return ((rgb888 & 0xf80000) >> 8)
+       + ((rgb888 & 0xfc00) >> 5)
+       + ((rgb888 & 0xf8) >> 3);
+}
+
+#pragma GCC diagnostic pop
 #ifdef  __cplusplus
 }
 #endif
