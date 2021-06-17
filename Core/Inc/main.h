@@ -64,6 +64,8 @@ void Error_Handler(void);
 #define ADS1220_DRDY_GPIO_Port GPIOD
 #define SPI1_SCK_Pin GPIO_PIN_3
 #define SPI1_SCK_GPIO_Port GPIOB
+#define AD9854_RST_Pin GPIO_PIN_12
+#define AD9854_RST_GPIO_Port GPIOG
 #define SPI1_MOSI_Pin GPIO_PIN_7
 #define SPI1_MOSI_GPIO_Port GPIOD
 #define AD9854_WR_Pin GPIO_PIN_13
@@ -72,10 +74,10 @@ void Error_Handler(void);
 #define DEBUG_RX_GPIO_Port GPIOA
 #define DEBUG_TX_Pin GPIO_PIN_9
 #define DEBUG_TX_GPIO_Port GPIOA
-#define LCD_RESET_Pin GPIO_PIN_7
-#define LCD_RESET_GPIO_Port GPIOG
-#define LCD_INT_Pin GPIO_PIN_3
-#define LCD_INT_GPIO_Port GPIOG
+#define GTP_RESET_Pin GPIO_PIN_7
+#define GTP_RESET_GPIO_Port GPIOG
+#define GTP_INT_Pin GPIO_PIN_3
+#define GTP_INT_GPIO_Port GPIOG
 #define AD9854_OSK_Pin GPIO_PIN_11
 #define AD9854_OSK_GPIO_Port GPIOB
 #define LCD_BL_Pin GPIO_PIN_13

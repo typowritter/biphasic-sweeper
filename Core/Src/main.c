@@ -115,6 +115,10 @@ int main(void)
   // ads1220_init();
 
   LED_SetColor(LED_G);
+
+  disp_string(0, 0, "ABCDEFG: 1 + 2 = 3, but haha");
+  // draw_rect(16, 24, 80, 80, 5);
+  draw_rect(200, 100, 80, 80, 6);
   // freq_convert(100000);
 
   /* USER CODE END 2 */

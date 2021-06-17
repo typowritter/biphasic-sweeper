@@ -54,10 +54,10 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(AD9854_WR_GPIO_Port, AD9854_WR_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOG, AD9854_RST_Pin|AD9854_WR_Pin|GTP_INT_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LCD_RESET_GPIO_Port, LCD_RESET_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GTP_RESET_GPIO_Port, GTP_RESET_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(AD9854_OSK_GPIO_Port, AD9854_OSK_Pin, GPIO_PIN_RESET);
@@ -80,24 +80,32 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(ADS1220_DRDY_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PGPin PGPin */
-  GPIO_InitStruct.Pin = AD9854_WR_Pin|LCD_RESET_Pin;
+  /*Configure GPIO pin : PtPin */
+  GPIO_InitStruct.Pin = AD9854_RST_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(AD9854_RST_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PGPin PGPin */
+  GPIO_InitStruct.Pin = AD9854_WR_Pin|GTP_RESET_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = LCD_INT_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(LCD_INT_GPIO_Port, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = GTP_INT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GTP_INT_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = AD9854_OSK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(AD9854_OSK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
@@ -111,7 +119,7 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = AD9854_FSK_Pin|AD9854_UDCL_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
