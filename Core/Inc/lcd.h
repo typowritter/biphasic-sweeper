@@ -143,6 +143,7 @@ lcd_clear()
  *
  * @param x,y  -- start position
  * @param len  -- length of the line
+ * @param t    -- thickness of the line
  */
 static INLINE void
 draw_hline(uint16_t x, uint16_t y, uint16_t len, uint16_t t)
@@ -155,6 +156,7 @@ draw_hline(uint16_t x, uint16_t y, uint16_t len, uint16_t t)
  *
  * @param x,y  -- start position
  * @param len  -- length of the line
+ * @param t    -- thickness of the line
  */
 static INLINE void
 draw_vline(uint16_t x, uint16_t y, uint16_t len, uint16_t t)
@@ -168,6 +170,13 @@ draw_pixel(uint16_t x, uint16_t y, color_t color)
   *(color_t *) pos2addr(x, y) = to_rgb565(color);
 }
 
+/**
+ * draw a rectangle
+ *
+ * @param x,y  -- start position
+ * @param w,h  -- size of the rectangle
+ * @param t    -- thickness of the edge
+ */
 static INLINE void
 draw_rect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t t)
 {
