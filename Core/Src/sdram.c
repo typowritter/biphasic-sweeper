@@ -9,7 +9,20 @@
 
 #include "sdram.h"
 
-__IO uint32_t *sdram_base_addr = (uint32_t *)SDRAM_BANK_ADDR;
+/* SDRAM register configuration */
+#define SDRAM_MODEREG_BURST_LENGTH_1             ((uint16_t)0x0000)
+#define SDRAM_MODEREG_BURST_LENGTH_2             ((uint16_t)0x0001)
+#define SDRAM_MODEREG_BURST_LENGTH_4             ((uint16_t)0x0002)
+#define SDRAM_MODEREG_BURST_LENGTH_8             ((uint16_t)0x0004)
+#define SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL      ((uint16_t)0x0000)
+#define SDRAM_MODEREG_BURST_TYPE_INTERLEAVED     ((uint16_t)0x0008)
+#define SDRAM_MODEREG_CAS_LATENCY_2              ((uint16_t)0x0020)
+#define SDRAM_MODEREG_CAS_LATENCY_3              ((uint16_t)0x0030)
+#define SDRAM_MODEREG_OPERATING_MODE_STANDARD    ((uint16_t)0x0000)
+#define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
+#define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
+
+__IO sdram_data_t *sdram_base_addr = (sdram_data_t *)SDRAM_BANK_ADDR;
 
 void sdram_init()
 {
@@ -83,7 +96,7 @@ void sdram_init()
  * @param w_addr    -- targeted write address in sdram
  * @param w_size    -- size of the data, in words
  */
-void sdram_write(uint32_t* p_buffer, uint32_t w_addr, uint32_t w_size)
+void sdram_write(sdram_data_t* p_buffer, uint32_t w_addr, uint32_t w_size)
 {
   HAL_SDRAM_WriteProtection_Disable(&sdram_dev);
   while (HAL_SDRAM_GetState(&sdram_dev) != HAL_SDRAM_STATE_READY);
@@ -101,7 +114,7 @@ void sdram_write(uint32_t* p_buffer, uint32_t w_addr, uint32_t w_size)
  * @param r_addr    -- targeted read address in sdram
  * @param r_size    -- size of the data, in words
  */
-void sdram_read(uint32_t* p_buffer, uint32_t r_addr, uint32_t r_size)
+void sdram_read(sdram_data_t* p_buffer, uint32_t r_addr, uint32_t r_size)
 {
   while (HAL_SDRAM_GetState(&sdram_dev) != HAL_SDRAM_STATE_READY);
 
@@ -118,17 +131,17 @@ void sdram_read(uint32_t* p_buffer, uint32_t r_addr, uint32_t r_size)
 
 void sdram_test()
 {
-  uint32_t testdata[16] = {
+  sdram_data_t testdata[16] = {
     0x12abe678, 0x87cfe321, 0x18ea2749, 0x7abd9274,
     0x34242356, 0x69034543, 0x54367688, 0x32568996,
     0xa8896ce3, 0x23794898, 0x219082a9, 0xff993231,
     0x8989abce, 0x29039027, 0x1987acdf, 0x345080ac,
   };
 
-  uint32_t read_buffer[16] = {0};
+  sdram_data_t read_buffer[16] = {0};
 
-  sdram_write(&testdata[0], 0, 16);
-  sdram_read(&read_buffer[0], 0, 16);
+  sdram_write(testdata, 0, 16);
+  sdram_read(read_buffer, 0, 16);
 
   int err = 0;
   for (int i = 0; i < 16; i++)
