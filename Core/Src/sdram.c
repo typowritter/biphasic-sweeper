@@ -90,8 +90,7 @@ void sdram_write(uint32_t* p_buffer, uint32_t w_addr, uint32_t w_size)
 
   for (uint32_t offset = w_addr; w_size != 0; w_size--)
   {
-    sdram_base_addr[offset] = *p_buffer++;
-    offset += 4;
+    sdram_base_addr[offset++] = *p_buffer++;
   }
 }
 
@@ -108,8 +107,7 @@ void sdram_read(uint32_t* p_buffer, uint32_t r_addr, uint32_t r_size)
 
   for (uint32_t offset = r_addr; r_size != 0; r_size--)
   {
-    *p_buffer++ = sdram_base_addr[offset];
-    offset += 4;
+    *p_buffer++ = sdram_base_addr[offset++];
   }
 }
 
