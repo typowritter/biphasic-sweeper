@@ -117,6 +117,79 @@ void disp_char(uint16_t x, uint16_t y, char ch)
   }
 }
 
+/**
+ * draw an arbitrary skewed line, using Bresenham algorithm
+ */
+void draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
+{
+  uint16_t us;
+  uint16_t cur_x, cur_y;
+
+  int32_t err_x = 0, err_y = 0, delta_x, delta_y, distance;
+  int32_t inc_x, inc_y;
+
+  delta_x = x2 - x1;
+  delta_y = y2 - y1;
+
+  cur_x = x1;
+  cur_y = y1;
+
+  if (delta_x > 0)
+  {
+    inc_x = 1;
+  }
+  else if (delta_x == 0)
+  {
+    inc_x = 0;
+  }
+  else
+  {
+    inc_x = -1;
+    delta_x = - delta_x;
+  }
+
+
+  if (delta_y > 0)
+  {
+    inc_y = 1;
+  }
+  else if (delta_y == 0)
+  {
+    inc_y = 0;
+  }
+  else
+  {
+    inc_y = -1;
+    delta_y = - delta_y;
+  }
+
+  if (delta_x > delta_y)
+    distance = delta_x;
+  else
+    distance = delta_y;
+
+
+  for (us = 0; us <= distance + 1; us++)
+  {
+    draw_pixel(cur_x, cur_y, lcd.fore_color);
+
+    err_x += delta_x ;
+    err_y += delta_y ;
+
+    if (err_x > distance)
+    {
+      err_x -= distance;
+      cur_x += inc_x;
+    }
+
+    if (err_y > distance)
+    {
+      err_y -= distance;
+      cur_y += inc_y;
+    }
+
+  }
+}
 
 /** ---------------- static definitions ---------------- */
 
