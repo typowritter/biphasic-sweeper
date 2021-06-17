@@ -4,6 +4,7 @@
   * @author  yxnan <yxnan@pm.me>
   * @date    2021-06-16
   * @brief   driver for onboard 5-inch 800x480 LCD
+  *          use sdram as video memory
   ******************************************************************************
   */
 
