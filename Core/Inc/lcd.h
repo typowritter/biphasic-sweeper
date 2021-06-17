@@ -87,11 +87,12 @@ typedef struct
 /* global struct of the lcd */
 extern lcd_configs_t lcd;
 
-static INLINE void     lcd_init();
-static INLINE void     lcd_clear();
-static INLINE void     draw_hline(uint16_t x, uint16_t y, uint16_t len);
-static INLINE void     draw_vline(uint16_t x, uint16_t y, uint16_t len);
-static INLINE void     draw_pixel(uint16_t x, uint16_t y, color_t color);
+static INLINE void lcd_init();
+static INLINE void lcd_clear();
+static INLINE void draw_hline(uint16_t x, uint16_t y, uint16_t len, uint16_t t);
+static INLINE void draw_vline(uint16_t x, uint16_t y, uint16_t len, uint16_t t);
+static INLINE void draw_pixel(uint16_t x, uint16_t y, color_t color);
+static INLINE void draw_rect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t t);
 static INLINE uint16_t to_rgb565(color_t rgb888);
 
 /**
@@ -143,9 +144,9 @@ lcd_clear()
  * @param len  -- length of the line
  */
 static INLINE void
-draw_hline(uint16_t x, uint16_t y, uint16_t len)
+draw_hline(uint16_t x, uint16_t y, uint16_t len, uint16_t t)
 {
-  fill_region(x, y, len, 1, lcd.fore_color);
+  fill_region(x, y, len, t, lcd.fore_color);
 }
 
 /**
@@ -155,9 +156,9 @@ draw_hline(uint16_t x, uint16_t y, uint16_t len)
  * @param len  -- length of the line
  */
 static INLINE void
-draw_vline(uint16_t x, uint16_t y, uint16_t len)
+draw_vline(uint16_t x, uint16_t y, uint16_t len, uint16_t t)
 {
-  fill_region(x, y, 1, len, lcd.fore_color);
+  fill_region(x, y, t, len, lcd.fore_color);
 }
 
 static INLINE void
@@ -165,6 +166,16 @@ draw_pixel(uint16_t x, uint16_t y, color_t color)
 {
   *(color_t *) pos2addr(x, y) = to_rgb565(color);
 }
+
+static INLINE void
+draw_rect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t t)
+{
+  draw_hline(x, y, w, t);
+  draw_vline(x, y, h, t);
+  draw_hline(x, y+h, w+t, t);
+  draw_vline(x+w, y, h+t, t);
+}
+
 
 static INLINE uint16_t
 to_rgb565(color_t rgb888)
