@@ -29,7 +29,8 @@ extern "C" {
 #define MAX_LAYERS         1 /* one layer */
 
 /* we use RGB888 internally, DMA2D will do the conversion on output */
-typedef uint32_t color_t;
+typedef uint32_t color_t;     /* RGB888 for use */
+typedef uint16_t o_color_t;   /* RGB565 for output */
 typedef uint32_t vmem_addr_t; /* video memory address */
 
 /* END project specific setups */
@@ -39,7 +40,7 @@ typedef uint32_t vmem_addr_t; /* video memory address */
 #define MISC_PLANE       2
 
 #define pos2addr(x, y) \
-  (SDRAM_BANK_ADDR + sizeof(color_t) * ((lcd.width) * (y) + (x)))
+  (SDRAM_BANK_ADDR + sizeof(o_color_t) * ((lcd.width) * (y) + (x)))
 
 #define get_plane_addr(plane) \
   (SDRAM_BANK_ADDR + (plane) * sizeof(color_t) * lcd.width * lcd.height)
@@ -166,7 +167,7 @@ draw_vline(uint16_t x, uint16_t y, uint16_t len, uint16_t t)
 static INLINE void
 draw_pixel(uint16_t x, uint16_t y, color_t color)
 {
-  *(color_t *) pos2addr(x, y) = to_rgb565(color);
+  *(o_color_t *) pos2addr(x, y) = to_rgb565(color);
 }
 
 /**
