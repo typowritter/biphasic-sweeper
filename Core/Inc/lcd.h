@@ -26,6 +26,7 @@ extern "C" {
 /* BEGIN project specific setups
  * keep those synchronized with global settings */
 #define OUTPUT_COLOR_MODE  DMA2D_OUTPUT_RGB565
+#define BYTE_PER_PIXEL     2 /* RGB565 */
 #define MAX_LAYERS         1 /* one layer */
 
 /* we use RGB888 internally, DMA2D will do the conversion on output */
@@ -39,7 +40,7 @@ typedef uint32_t vmem_addr_t; /* video memory address */
 #define MISC_PLANE       2
 
 #define pos2addr(x, y) \
-  (SDRAM_BANK_ADDR + sizeof(color_t) * ((lcd.width) * (y) + (x)))
+  (SDRAM_BANK_ADDR + BYTE_PER_PIXEL * ((lcd.width) * (y) + (x)))
 
 #define get_plane_addr(plane) \
   (SDRAM_BANK_ADDR + (plane) * sizeof(color_t) * lcd.width * lcd.height)
