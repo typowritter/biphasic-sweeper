@@ -40,8 +40,8 @@ DEF_GPIO(ad9854_pin_rst,   AD9854_RST_GPIO_Port,  AD9854_RST_Pin);
 DEF_GPIO(ad9854_pin_osk,   AD9854_OSK_GPIO_Port,  AD9854_OSK_Pin);
 DEF_GPIO(ad9854_pin_fsk,   AD9854_FSK_GPIO_Port,  AD9854_FSK_Pin);
 DEF_GPIO(ad9854_pin_udclk, AD9854_UDCL_GPIO_Port, AD9854_UDCL_Pin);
-DEF_GPIO_GROUP(ad9854_par_addr, GPIOJ, 6, 2);
-DEF_GPIO_GROUP(ad9854_par_data, GPIOJ, 8, 8);
+DEF_GPIO_GROUP(ad9854_par_addr, GPIOB, 6, 5);
+DEF_GPIO_GROUP(ad9854_par_data, GPIOC, 8, 1);
 #undef DEF_GPIO
 #undef DEF_GPIO_GROUP
 
