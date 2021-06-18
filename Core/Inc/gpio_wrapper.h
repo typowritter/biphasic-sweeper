@@ -97,7 +97,7 @@ gpio_get_group(gpio_group group)
   return mask & (group.port->IDR >> group.offset);
 }
 
-#pragma GCC diagnostic push
+#pragma GCC diagnostic pop
 #ifdef  __cplusplus
 }
 #endif
