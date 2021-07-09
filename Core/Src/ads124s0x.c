@@ -85,5 +85,5 @@ void ads124s_write_regs(ads124s_register* reg, uint8_t num, uint8_t* data)
 
 void ads124s_read_conv_data(uint32_t *conv_data)
 {
-  undefined();
+  todo();
 }

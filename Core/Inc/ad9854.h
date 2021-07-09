@@ -25,23 +25,33 @@ extern "C" {
 #pragma GCC diagnostic ignored "-Wunused-function"
 
 #include "main.h"
-// #include "spi.h"
+#include "spi.h"
 #include "gpio_wrapper.h"
 #include "utils.h"
 
 /* BEGIN project specific setups
  * keep those synchronized with global settings */
+#define USE_PARALLEL       0
 #define ad9854_dev         hspi3
 #define ad9854_spi_timeout 100000
 #define ad9854_sysclk      30000000
 
-DEF_GPIO(ad9854_pin_wr,    AD9854_WR_GPIO_Port,   AD9854_WR_Pin);
-DEF_GPIO(ad9854_pin_rst,   AD9854_RST_GPIO_Port,  AD9854_RST_Pin);
-DEF_GPIO(ad9854_pin_osk,   AD9854_OSK_GPIO_Port,  AD9854_OSK_Pin);
-DEF_GPIO(ad9854_pin_fsk,   AD9854_FSK_GPIO_Port,  AD9854_FSK_Pin);
-DEF_GPIO(ad9854_pin_udclk, AD9854_UDCL_GPIO_Port, AD9854_UDCL_Pin);
-DEF_GPIO_GROUP(ad9854_par_addr, GPIOJ, 6, 2);
-DEF_GPIO_GROUP(ad9854_par_data, GPIOJ, 8, 8);
+#if USE_PARALLEL
+  DEF_GPIO(ad9854_pin_wr,     AD9854_WR_GPIO_Port,    AD9854_WR_Pin);
+  DEF_GPIO(ad9854_pin_rst,    AD9854_RST_GPIO_Port,   AD9854_RST_Pin);
+  DEF_GPIO(ad9854_pin_osk,    AD9854_OSK_GPIO_Port,   AD9854_OSK_Pin);
+  DEF_GPIO(ad9854_pin_fsk,    AD9854_FSK_GPIO_Port,   AD9854_FSK_Pin);
+  DEF_GPIO(ad9854_pin_udclk,  AD9854_UDCL_GPIO_Port,  AD9854_UDCL_Pin);
+  DEF_GPIO_GROUP(ad9854_par_addr, GPIOJ, 6, 2);
+  DEF_GPIO_GROUP(ad9854_par_data, GPIOJ, 8, 8);
+#else
+  DEF_GPIO(ad9854_pin_cs,     AD9854_CS_GPIO_Port,    AD9854_CS_Pin);
+  DEF_GPIO(ad9854_pin_iorst,  AD9854_IORST_GPIO_Port, AD9854_IORST_Pin);
+  DEF_GPIO(ad9854_pin_rst,    AD9854_RST_GPIO_Port,   AD9854_RST_Pin);
+  DEF_GPIO(ad9854_pin_osk,    AD9854_OSK_GPIO_Port,   AD9854_OSK_Pin);
+  DEF_GPIO(ad9854_pin_fsk,    AD9854_FSK_GPIO_Port,   AD9854_FSK_Pin);
+  DEF_GPIO(ad9854_pin_udclk,  AD9854_UDCL_GPIO_Port,  AD9854_UDCL_Pin);
+#endif
 #undef DEF_GPIO
 #undef DEF_GPIO_GROUP
 
@@ -141,23 +151,31 @@ void amp_convert(uint16_t amp);
 
 /* parallel */
 uint8_t ad9854_read_byte(uint8_t addr);
+uint64_t ad9854_read_serial(ad9854_register* reg);
 uint64_t ad9854_read_parallel(ad9854_register* reg);
 void ad9854_write_byte(uint8_t addr, uint8_t data);
+void ad9854_write_serial(ad9854_register* reg, uint64_t value);
 void ad9854_write_parallel(ad9854_register* reg, uint64_t value);
 
 /** implementation starts here */
 static INLINE void
 ad9854_select()
 {
-  // gpio_set_low(ad9854_pin_cs);
+#if USE_PARALLEL
   undefined();
+#else
+  gpio_set_low(ad9854_pin_cs);
+#endif
 }
 
 static INLINE void
 ad9854_unselect()
 {
-  // gpio_set_high(ad9854_pin_cs);
+#if USE_PARALLEL
   undefined();
+#else
+  gpio_set_high(ad9854_pin_cs);
+#endif
 }
 
 static INLINE void
@@ -182,7 +200,11 @@ ad9854_get_bits(ad9854_register_bit field)
 static INLINE void
 ad9854_update_reg(ad9854_register* reg)
 {
+#if USE_PARALLEL
   ad9854_write_parallel(reg, reg->value);
+#else
+  ad9854_write_serial(reg, reg->value);
+#endif
 }
 
 static INLINE void

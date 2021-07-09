@@ -20,15 +20,17 @@ ad9854_registers ad9854_regs = {
 void ad9854_init()
 {
   gpio_set_low(ad9854_pin_udclk);
+#if USE_PARALLEL
   gpio_set_high(ad9854_pin_wr);
-  // gpio_set_high(ad9854_pin_rd);
-
+  gpio_set_high(ad9854_pin_rd);
+#endif
   ad9854_reset();
 
   ad9854_set_bits(ad9854_updclk, ad9854_updclk_external);
   ad9854_set_bits(ad9854_mode, ad9854_mode_single);
   ad9854_set_bits(ad9854_invsinc_byp, 1);
-  ad9854_set_bits(ad9854_osk_en, 0);
+  ad9854_set_bits(ad9854_sdo_cr, 1);
+  ad9854_set_bits(ad9854_osk_en, 1);
   ad9854_update_reg(&ad9854_regs.cr);
 
   delay_ms(10);
@@ -59,25 +61,37 @@ void amp_convert(uint16_t amp)
 
 uint8_t ad9854_read_byte(uint8_t addr)
 {
-  undefined();
+#if USE_PARALLEL
+  todo();
   return whatever;
+#else
+  todo();
+  return whatever;
+#endif
 }
 
 void ad9854_write_byte(uint8_t addr, uint8_t data)
 {
+#if USE_PARALLEL
   gpio_set_group(ad9854_par_addr, addr);
   gpio_set_group(ad9854_par_data, data);
-
   gpio_set_low(ad9854_pin_wr);
   delay_us(1);  // tWRLOW = 2.5ns
   gpio_set_high(ad9854_pin_wr);
   delay_us(1);  // tWRHOGH = 7ns
+#else
+#endif
 }
 
 uint64_t ad9854_read_parallel(ad9854_register* reg)
 {
-  undefined();
+#if USE_PARALLEL
+  todo();
   return whatever;
+#else
+  todo();
+  return whatever;
+#endif
 }
 
 void ad9854_write_parallel(ad9854_register* reg, uint64_t value)
@@ -90,6 +104,26 @@ void ad9854_write_parallel(ad9854_register* reg, uint64_t value)
 
     p_addr++;
   }
+
+  gpio_set_high(ad9854_pin_udclk);
+  delay_us(1);
+  gpio_set_low(ad9854_pin_udclk);
+}
+
+void ad9854_write_serial(ad9854_register* reg, uint64_t value)
+{
+  uint8_t tx_buffer[7];
+  tx_buffer[0] = reg->s_addr;  /* instr write */
+
+  for (int i = 1; i <= reg->size; i++)
+  {
+    tx_buffer[i] = (value >> ((reg->size - i) * 8)) & 0xff;
+  }
+
+  ad9854_select();
+
+  HAL_SPI_Transmit(&ad9854_dev, tx_buffer, 1 + reg->size, ad9854_spi_timeout);
+  ad9854_unselect();
 
   gpio_set_high(ad9854_pin_udclk);
   delay_us(1);

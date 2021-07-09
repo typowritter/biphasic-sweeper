@@ -24,6 +24,7 @@ extern "C" {
 #define str(s) _str(s)
 
 #define undefined Error_Handler
+#define todo      Error_Handler
 #define whatever  0
 
 /*
