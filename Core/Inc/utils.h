@@ -25,7 +25,6 @@ extern "C" {
 
 #define undefined Error_Handler
 #define todo      Error_Handler
-#define whatever  0
 
 /*
  * compound literals, supported since C99

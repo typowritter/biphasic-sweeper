@@ -38,6 +38,7 @@ extern "C" {
 
 #if USE_PARALLEL
   DEF_GPIO(ad9854_pin_wr,     AD9854_WR_GPIO_Port,    AD9854_WR_Pin);
+  // DEF_GPIO(ad9854_pin_rd,     AD9854_RD_GPIO_Port,    AD9854_RD_Pin);
   DEF_GPIO(ad9854_pin_rst,    AD9854_RST_GPIO_Port,   AD9854_RST_Pin);
   DEF_GPIO(ad9854_pin_osk,    AD9854_OSK_GPIO_Port,   AD9854_OSK_Pin);
   DEF_GPIO(ad9854_pin_fsk,    AD9854_FSK_GPIO_Port,   AD9854_FSK_Pin);
@@ -149,13 +150,16 @@ void ad9854_reset();
 void freq_convert(uint64_t freq);
 void amp_convert(uint16_t amp);
 
-/* parallel */
+/* parallel and serial interface */
+#if USE_PARALLEL
 uint8_t ad9854_read_byte(uint8_t addr);
-uint64_t ad9854_read_serial(ad9854_register* reg);
 uint64_t ad9854_read_parallel(ad9854_register* reg);
 void ad9854_write_byte(uint8_t addr, uint8_t data);
-void ad9854_write_serial(ad9854_register* reg, uint64_t value);
 void ad9854_write_parallel(ad9854_register* reg, uint64_t value);
+#else
+uint64_t ad9854_read_serial(ad9854_register* reg);
+void ad9854_write_serial(ad9854_register* reg, uint64_t value);
+#endif
 
 /** implementation starts here */
 static INLINE void
