@@ -33,8 +33,8 @@
 #include "lcd.h"
 #include "tty.h"
 #include "delay.h"
-// #include "ads1220.h"
 #include "ad9854.h"
+#include "ads124s0x.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,14 +112,14 @@ int main(void)
   // lcd_init();
   delay_init();
   ad9854_init();
-  // ads1220_init();
+  ads124s_init();
 
   LED_SetColor(LED_G);
 
   // disp_string(0, 0, "ABCDEFG: 1 + 2 = 3, but haha");
   // draw_rect(16, 24, 80, 80, 5);
   // draw_rect(200, 100, 80, 80, 6);
-  freq_convert(100000);
+  // uint32_t freq = 1000;
 
   /* USER CODE END 2 */
 
@@ -127,8 +127,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // ads1220_test();
-    // tty_print("ST = 0x%X\r\n", ads1220_regs.status.value);
+    ads124s_test();
+    tty_print("ST = 0x%X\r\n", ads124s_regs.status.value);
+    // freq_convert(freq);
+    // freq += freq/10;
     delay_ms(1000);
     /* USER CODE END WHILE */
 
@@ -208,7 +210,7 @@ void PeriphCommonClock_Config(void)
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FMC|RCC_PERIPHCLK_SPI1;
   PeriphClkInitStruct.PLL2.PLL2M = 25;
   PeriphClkInitStruct.PLL2.PLL2N = 240;
-  PeriphClkInitStruct.PLL2.PLL2P = 40;
+  PeriphClkInitStruct.PLL2.PLL2P = 12;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
   PeriphClkInitStruct.PLL2.PLL2R = 1;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_0;
