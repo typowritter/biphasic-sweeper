@@ -28,7 +28,7 @@ static uint8_t rx_buffer[5];  /* if enable STATUS or CRC byte, must be increased
 
 void ads124s_test()
 {
-  ads124s_read_reg(&ads124s_regs.status);
+  ads124s_read_reg(&ads124s_regs.datarate);
 }
 
 void ads124s_init()
@@ -37,6 +37,8 @@ void ads124s_init()
   delay_ms(2);  /* td(RSSC) = 4096 * tCLK */
   ads124s_set_value(ads124s_fl_por, 0);
   ads124s_update_matching_reg(ads124s_fl_por);
+  ads124s_set_value(ads124s_datarate, ads124s_datarate_x20);
+  ads124s_update_matching_reg(ads124s_datarate);
 }
 
 void ads124s_reset()

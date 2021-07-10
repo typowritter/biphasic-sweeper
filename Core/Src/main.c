@@ -128,7 +128,7 @@ int main(void)
   while (1)
   {
     ads124s_test();
-    tty_print("ST = 0x%X\r\n", ads124s_regs.status.value);
+    tty_print("ST = 0x%X\r\n", ads124s_regs.datarate.value);
     delay_ms(1000);
     /* USER CODE END WHILE */
 
@@ -208,7 +208,7 @@ void PeriphCommonClock_Config(void)
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FMC|RCC_PERIPHCLK_SPI1;
   PeriphClkInitStruct.PLL2.PLL2M = 25;
   PeriphClkInitStruct.PLL2.PLL2N = 240;
-  PeriphClkInitStruct.PLL2.PLL2P = 40;
+  PeriphClkInitStruct.PLL2.PLL2P = 12;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
   PeriphClkInitStruct.PLL2.PLL2R = 1;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_0;
