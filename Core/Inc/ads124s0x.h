@@ -13,6 +13,9 @@
 #ifdef  __cplusplus
 extern "C" {
 #endif
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-const-variable"
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 #include "gpio_wrapper.h"
 #include "spi.h"
@@ -26,7 +29,6 @@ DEF_GPIO(ads124s_pin_rst,  ADS124S_RST_GPIO_Port,  ADS124S_RST_Pin);
 DEF_GPIO(ads124s_pin_cs,   ADS124S_CS_GPIO_Port,   ADS124S_CS_Pin);
 DEF_GPIO(ads124s_pin_sync, ADS124S_SYNC_GPIO_Port, ADS124S_SYNC_Pin);
 DEF_GPIO(ads124s_pin_drdy, ADS124S_DRDY_GPIO_Port, ADS124S_DRDY_Pin);
-#undef DEF_GPIO
 
 /* END project specific setups */
 
@@ -409,6 +411,7 @@ ads124s_performSelfOffsetCalibration()
   ads124s_send_cmd(ads124s_cmd_sfocal);
 }
 
+#pragma GCC diagnostic pop
 #ifdef  __cplusplus
 }
 #endif

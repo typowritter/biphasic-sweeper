@@ -24,7 +24,6 @@ extern "C" {
 #define ads1220_spi_timeout 100000
 DEF_GPIO(ads1220_pin_cs,   ADS1220_CS_GPIO_Port,   ADS1220_CS_Pin);
 DEF_GPIO(ads1220_pin_drdy, ADS1220_DRDY_GPIO_Port, ADS1220_DRDY_Pin);
-#undef DEF_GPIO
 
 /* END project specific setups */
 
