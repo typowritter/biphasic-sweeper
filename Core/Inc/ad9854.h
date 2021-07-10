@@ -43,8 +43,8 @@ extern "C" {
   DEF_GPIO(ad9854_pin_osk,    AD9854_OSK_GPIO_Port,   AD9854_OSK_Pin);
   DEF_GPIO(ad9854_pin_fsk,    AD9854_FSK_GPIO_Port,   AD9854_FSK_Pin);
   DEF_GPIO(ad9854_pin_udclk,  AD9854_UDCL_GPIO_Port,  AD9854_UDCL_Pin);
-  DEF_GPIO_GROUP(ad9854_par_addr, GPIOJ, 6, 2);
-  DEF_GPIO_GROUP(ad9854_par_data, GPIOJ, 8, 8);
+  DEF_GPIO_GROUP(ad9854_par_addr, GPIOB, 6, 5);
+  DEF_GPIO_GROUP(ad9854_par_data, GPIOC, 8, 1);
 #else
   DEF_GPIO(ad9854_pin_cs,     AD9854_CS_GPIO_Port,    AD9854_CS_Pin);
   DEF_GPIO(ad9854_pin_iorst,  AD9854_IORST_GPIO_Port, AD9854_IORST_Pin);
@@ -138,8 +138,6 @@ typedef enum {
   ad9854_updclk_internal = 1,
 } ad9854_updclk_t;
 
-static INLINE void      ad9854_select();
-static INLINE void      ad9854_unselect();
 static INLINE void      ad9854_set_bits(ad9854_register_bit field, uint8_t value);
 static INLINE uint8_t   ad9854_get_bits(ad9854_register_bit field);
 static INLINE void      ad9854_update_reg(ad9854_register* reg);
@@ -157,30 +155,26 @@ uint64_t ad9854_read_parallel(ad9854_register* reg);
 void ad9854_write_byte(uint8_t addr, uint8_t data);
 void ad9854_write_parallel(ad9854_register* reg, uint64_t value);
 #else
+static INLINE void ad9854_select();
+static INLINE void ad9854_unselect();
 uint64_t ad9854_read_serial(ad9854_register* reg);
 void ad9854_write_serial(ad9854_register* reg, uint64_t value);
 #endif
 
 /** implementation starts here */
+#if !(USE_PARALLEL)
 static INLINE void
 ad9854_select()
 {
-#if USE_PARALLEL
-  undefined();
-#else
   gpio_set_low(ad9854_pin_cs);
-#endif
 }
 
 static INLINE void
 ad9854_unselect()
 {
-#if USE_PARALLEL
-  undefined();
-#else
   gpio_set_high(ad9854_pin_cs);
-#endif
 }
+#endif
 
 static INLINE void
 ad9854_set_bits(ad9854_register_bit field, uint8_t value)
