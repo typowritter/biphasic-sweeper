@@ -24,9 +24,8 @@ extern "C" {
 #pragma GCC diagnostic ignored "-Wunused-const-variable"
 #pragma GCC diagnostic ignored "-Wunused-function"
 
-#include "main.h"
-#include "spi.h"
 #include "gpio_wrapper.h"
+#include "spi.h"
 #include "utils.h"
 
 /* BEGIN project specific setups
@@ -53,8 +52,6 @@ extern "C" {
   DEF_GPIO(ad9854_pin_fsk,    AD9854_FSK_GPIO_Port,   AD9854_FSK_Pin);
   DEF_GPIO(ad9854_pin_udclk,  AD9854_UDCL_GPIO_Port,  AD9854_UDCL_Pin);
 #endif
-#undef DEF_GPIO
-#undef DEF_GPIO_GROUP
 
 /* END project specific setups */
 
