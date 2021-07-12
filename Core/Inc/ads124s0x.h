@@ -265,7 +265,7 @@ typedef enum {
 } ads124s_imag_t;
 
 typedef enum {
-  ads124s_vbias_div_2 = 0,
+  ads124s_vbias_div_2  = 0,
   ads124s_vbias_div_12 = 1,
 } ads124s_vbias_t;
 

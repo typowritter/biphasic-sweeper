@@ -130,7 +130,7 @@ int main(void)
   while (1)
   {
     ads124s_test();
-    tty_print("ST = 0x%X\r\n", ads124s_regs.datarate.value);
+    tty_print("sys = 0x%X, (default: 0x10)\r\n", ads124s_regs.sys.value);
     delay_ms(1000);
     /* USER CODE END WHILE */
 

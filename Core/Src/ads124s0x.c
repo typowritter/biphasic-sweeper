@@ -5,10 +5,10 @@
 ads124s_registers ads124s_regs = {
   .id       = {.addr = 0x00, .value = 0x00, .is_volatile = false },
   .status   = {.addr = 0x01, .value = 0x80, .is_volatile = true },
-  .inpmux   = {.addr = 0x02, .value = 0x01, .is_volatile = false },
+  .inpmux   = {.addr = 0x02, .value = 0x01, .is_volatile = true },
   .pga      = {.addr = 0x03, .value = 0x00, .is_volatile = false },
-  .datarate = {.addr = 0x04, .value = 0x14, .is_volatile = false },
-  .ref      = {.addr = 0x05, .value = 0x10, .is_volatile = false },
+  .datarate = {.addr = 0x04, .value = 0x14, .is_volatile = true },
+  .ref      = {.addr = 0x05, .value = 0x10, .is_volatile = true },
   .idacmag  = {.addr = 0x06, .value = 0x00, .is_volatile = false },
   .idacmux  = {.addr = 0x07, .value = 0xff, .is_volatile = false },
   .vbias    = {.addr = 0x08, .value = 0x00, .is_volatile = false },
@@ -28,7 +28,7 @@ static uint8_t rx_buffer[5];  /* if enable STATUS or CRC byte, must be increased
 
 void ads124s_test()
 {
-  ads124s_read_reg(&ads124s_regs.datarate);
+  ads124s_read_reg(&ads124s_regs.inpmux);
 }
 
 void ads124s_init()
@@ -37,8 +37,6 @@ void ads124s_init()
   delay_ms(2);  /* td(RSSC) = 4096 * tCLK */
   ads124s_set_value(ads124s_fl_por, 0);
   ads124s_update_matching_reg(ads124s_fl_por);
-  ads124s_set_value(ads124s_datarate, ads124s_datarate_x20);
-  ads124s_update_matching_reg(ads124s_datarate);
 }
 
 void ads124s_reset()
