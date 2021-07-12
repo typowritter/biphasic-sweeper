@@ -33,7 +33,7 @@
 #include "lcd.h"
 #include "tty.h"
 #include "delay.h"
-// #include "ads1220.h"
+#include "ads124s0x.h"
 #include "ad9854.h"
 /* USER CODE END Includes */
 
@@ -112,7 +112,7 @@ int main(void)
   // lcd_init();
   delay_init();
   ad9854_init();
-  // ads1220_init();
+  ads124s_init();
 
   LED_SetColor(LED_G);
 
@@ -127,8 +127,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // ads1220_test();
-    // tty_print("ST = 0x%X\r\n", ads1220_regs.status.value);
+    ads124s_test();
+    tty_print("ST = 0x%X\r\n", ads124s_regs.status.value);
     delay_ms(1000);
     /* USER CODE END WHILE */
 
