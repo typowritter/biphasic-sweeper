@@ -34,8 +34,8 @@
 #include "lcd.h"
 #include "tty.h"
 #include "delay.h"
+// #include "ad9854.h"
 #include "ads124s0x.h"
-#include "ad9854.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -111,17 +111,16 @@ int main(void)
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
-  // lcd_init();
+  lcd_init();
   delay_init();
-  ad9854_init();
-  ads124s_init();
+  // ad9854_init();
+  // ads124s_init();
 
   LED_SetColor(LED_G);
 
-  // disp_string(0, 0, "ABCDEFG: 1 + 2 = 3, but haha");
-  // draw_rect(16, 24, 80, 80, 5);
-  // draw_rect(200, 100, 80, 80, 6);
-  freq_convert(100000);
+  disp_string(0, 0, "ABCDEFG: 1 + 2 = 3, but haha");
+  draw_rect(16, 24, 80, 80, 5);
+  draw_rect(200, 100, 80, 80, 6);
 
   /* USER CODE END 2 */
 
@@ -129,8 +128,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    ads124s_test();
-    tty_print("sys = 0x%X, (default: 0x10)\r\n", ads124s_regs.sys.value);
     delay_ms(1000);
     /* USER CODE END WHILE */
 

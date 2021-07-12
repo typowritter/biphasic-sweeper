@@ -44,8 +44,6 @@ typedef struct
   const uint8_t addr;
   /* the current value stored locally for transmission */
   uint8_t value;
-  /* may be modified by the device */
-  const bool is_volatile;
 } ads124s_register;
 
 typedef struct
