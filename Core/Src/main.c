@@ -19,18 +19,23 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma2d.h"
+#include "i2c.h"
+#include "ltdc.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "fmc.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "led.h"
+#include "lcd.h"
 #include "tty.h"
 #include "delay.h"
-// #include "ads1220.h"
-#include "ad9854.h"
+// #include "ad9854.h"
+#include "ads124s0x.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,6 +61,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void PeriphCommonClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -87,6 +93,9 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
+/* Configure the peripherals common clocks */
+  PeriphCommonClock_Config();
+
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
@@ -96,13 +105,22 @@ int main(void)
   MX_USART1_UART_Init();
   MX_SPI1_Init();
   MX_TIM6_Init();
+  MX_FMC_Init();
+  MX_LTDC_Init();
+  MX_DMA2D_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
+
+  lcd_init();
   delay_init();
-  ad9854_init();
-  // ads1220_init();
+  // ad9854_init();
+  // ads124s_init();
 
   LED_SetColor(LED_G);
-  freq_convert(100000);
+
+  disp_string(0, 0, "ABCDEFG: 1 + 2 = 3, but haha");
+  draw_rect(16, 24, 80, 80, 5);
+  draw_rect(200, 100, 80, 80, 6);
 
   /* USER CODE END 2 */
 
@@ -110,8 +128,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // ads1220_test();
-    // tty_print("ST = 0x%X\r\n", ads1220_regs.status.value);
     delay_ms(1000);
     /* USER CODE END WHILE */
 
@@ -173,6 +189,33 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief Peripherals Common Clock Configuration
+  * @retval None
+  */
+void PeriphCommonClock_Config(void)
+{
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+  /** Initializes the peripherals clock
+  */
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FMC|RCC_PERIPHCLK_SPI1;
+  PeriphClkInitStruct.PLL2.PLL2M = 25;
+  PeriphClkInitStruct.PLL2.PLL2N = 240;
+  PeriphClkInitStruct.PLL2.PLL2P = 12;
+  PeriphClkInitStruct.PLL2.PLL2Q = 2;
+  PeriphClkInitStruct.PLL2.PLL2R = 1;
+  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_0;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+  PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_PLL2;
+  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL2;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();
   }

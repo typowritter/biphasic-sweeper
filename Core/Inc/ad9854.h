@@ -30,7 +30,7 @@ extern "C" {
 
 /* BEGIN project specific setups
  * keep those synchronized with global settings */
-#define USE_PARALLEL       0
+#define USE_PARALLEL       1
 #define ad9854_dev         hspi3
 #define ad9854_spi_timeout 100000
 #define ad9854_sysclk      30000000
