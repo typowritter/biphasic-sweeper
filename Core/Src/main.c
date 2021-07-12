@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dma2d.h"
+#include "i2c.h"
 #include "ltdc.h"
 #include "spi.h"
 #include "tim.h"
@@ -107,6 +108,7 @@ int main(void)
   MX_FMC_Init();
   MX_LTDC_Init();
   MX_DMA2D_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
   // lcd_init();
