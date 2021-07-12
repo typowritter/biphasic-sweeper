@@ -3,33 +3,28 @@
 
 /* singleton */
 ads124s_registers ads124s_regs = {
-  .id       = {.addr = 0x00, .value = 0x00, .is_volatile = false },
-  .status   = {.addr = 0x01, .value = 0x80, .is_volatile = true },
-  .inpmux   = {.addr = 0x02, .value = 0x01, .is_volatile = false },
-  .pga      = {.addr = 0x03, .value = 0x00, .is_volatile = false },
-  .datarate = {.addr = 0x04, .value = 0x14, .is_volatile = false },
-  .ref      = {.addr = 0x05, .value = 0x10, .is_volatile = false },
-  .idacmag  = {.addr = 0x06, .value = 0x00, .is_volatile = false },
-  .idacmux  = {.addr = 0x07, .value = 0xff, .is_volatile = false },
-  .vbias    = {.addr = 0x08, .value = 0x00, .is_volatile = false },
-  .sys      = {.addr = 0x09, .value = 0x10, .is_volatile = false },
-  .ofcal0   = {.addr = 0x0a, .value = 0x00, .is_volatile = true },
-  .ofcal1   = {.addr = 0x0b, .value = 0x00, .is_volatile = true },
-  .ofcal2   = {.addr = 0x0c, .value = 0x00, .is_volatile = true },
-  .fscal0   = {.addr = 0x0d, .value = 0x00, .is_volatile = true },
-  .fscal1   = {.addr = 0x0e, .value = 0x00, .is_volatile = true },
-  .fscal2   = {.addr = 0x0f, .value = 0x40, .is_volatile = true },
-  .gpiodat  = {.addr = 0x10, .value = 0x00, .is_volatile = false },
-  .gpiocon  = {.addr = 0x11, .value = 0x00, .is_volatile = false },
+  .id       = {.addr = 0x00, .value = 0x00 },
+  .status   = {.addr = 0x01, .value = 0x80 },
+  .inpmux   = {.addr = 0x02, .value = 0x01 },
+  .pga      = {.addr = 0x03, .value = 0x00 },
+  .datarate = {.addr = 0x04, .value = 0x14 },
+  .ref      = {.addr = 0x05, .value = 0x10 },
+  .idacmag  = {.addr = 0x06, .value = 0x00 },
+  .idacmux  = {.addr = 0x07, .value = 0xff },
+  .vbias    = {.addr = 0x08, .value = 0x00 },
+  .sys      = {.addr = 0x09, .value = 0x10 },
+  .ofcal0   = {.addr = 0x0a, .value = 0x00 },
+  .ofcal1   = {.addr = 0x0b, .value = 0x00 },
+  .ofcal2   = {.addr = 0x0c, .value = 0x00 },
+  .fscal0   = {.addr = 0x0d, .value = 0x00 },
+  .fscal1   = {.addr = 0x0e, .value = 0x00 },
+  .fscal2   = {.addr = 0x0f, .value = 0x40 },
+  .gpiodat  = {.addr = 0x10, .value = 0x00 },
+  .gpiocon  = {.addr = 0x11, .value = 0x00 },
 };
 
 static uint8_t tx_buffer[5];  /* transmit up to 3 bytes in one run */
 static uint8_t rx_buffer[5];  /* if enable STATUS or CRC byte, must be increased */
-
-void ads124s_test()
-{
-  ads124s_read_reg(&ads124s_regs.status);
-}
 
 void ads124s_init()
 {

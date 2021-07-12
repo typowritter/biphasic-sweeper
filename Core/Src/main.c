@@ -127,8 +127,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    ads124s_test();
-    tty_print("ST = 0x%X\r\n", ads124s_regs.status.value);
     // freq_convert(freq);
     // freq += freq/10;
     delay_ms(1000);

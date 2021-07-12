@@ -44,8 +44,6 @@ typedef struct
   const uint8_t addr;
   /* the current value stored locally for transmission */
   uint8_t value;
-  /* may be modified by the device */
-  const bool is_volatile;
 } ads124s_register;
 
 typedef struct
@@ -265,7 +263,7 @@ typedef enum {
 } ads124s_imag_t;
 
 typedef enum {
-  ads124s_vbias_div_2 = 0,
+  ads124s_vbias_div_2  = 0,
   ads124s_vbias_div_12 = 1,
 } ads124s_vbias_t;
 
