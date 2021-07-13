@@ -27,8 +27,8 @@ extern "C" {
  * keep those synchronized with global settings */
 #define OUTPUT_COLOR_MODE  DMA2D_OUTPUT_RGB565
 #define MAX_LAYERS         1 /* one layer */
-#define LCD_WIDTH          800
-#define LCD_HEIGHT         480
+#define LCD_WIDTH          1024
+#define LCD_HEIGHT         600
 
 /* we use RGB888 internally, DMA2D will do the conversion on output */
 typedef uint32_t color_t;     /* RGB888 for use */
@@ -142,7 +142,7 @@ lcd_init()
 static INLINE void
 lcd_clear()
 {
-  fill_region(0, 0, LCD_WIDTH, LCD_HEIGHT, lcd.back_color);
+  fill_region(0, 0, LCD_WIDTH, LCD_HEIGHT, lightgreen);
 }
 
 /**
