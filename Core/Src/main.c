@@ -36,6 +36,8 @@
 #include "delay.h"
 // #include "ad9854.h"
 #include "ads124s0x.h"
+#include "lvgl/lvgl.h"
+#include "lv_port_disp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -111,24 +113,31 @@ int main(void)
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
-  lcd_init();
   delay_init();
+  lv_init();
+  lv_port_disp_init();
   // ad9854_init();
   // ads124s_init();
 
   LED_SetColor(LED_G);
 
-  disp_string(0, 0, "ABCDEFG: 1 + 2 = 3, but haha");
-  draw_rect(16, 24, 80, 80, 5);
-  draw_rect(200, 100, 80, 80, 6);
+  lv_obj_t * btn = lv_btn_create(lv_scr_act());     /*Add a button the current screen*/
+  lv_obj_set_pos(btn, 10, 10);                            /*Set its position*/
+  lv_obj_set_size(btn, 120, 50);                          /*Set its size*/
+  // lv_obj_add_event_cb(btn, btn_event_cb, LV_EVENT_ALL, NULL);           /*Assign a callback to the button*/
 
+  lv_obj_t * label = lv_label_create(btn);          /*Add a label to the button*/
+  lv_label_set_text(label, "Button");                     /*Set the labels text*/
+  lv_obj_center(label);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    delay_ms(1000);
+    lv_tick_inc(2);
+    lv_timer_handler();
+    delay_ms(2);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

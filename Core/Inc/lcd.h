@@ -27,6 +27,8 @@ extern "C" {
  * keep those synchronized with global settings */
 #define OUTPUT_COLOR_MODE  DMA2D_OUTPUT_RGB565
 #define MAX_LAYERS         1 /* one layer */
+#define LCD_WIDTH          800
+#define LCD_HEIGHT         480
 
 /* we use RGB888 internally, DMA2D will do the conversion on output */
 typedef uint32_t color_t;     /* RGB888 for use */
@@ -35,15 +37,16 @@ typedef uint32_t vmem_addr_t; /* video memory address */
 
 /* END project specific setups */
 
-#define VRAM_PLANE       0
-#define FONTCACHE_PLANE  1
-#define MISC_PLANE       2
+#define VRAM_PLANE         0
+#define FONTCACHE_PLANE    1
+#define MISC_PLANE         2
+#define LVGL_MEMPOOL_PLANE 3
 
 #define pos2addr(x, y) \
-  (SDRAM_BANK_ADDR + sizeof(o_color_t) * ((lcd.width) * (y) + (x)))
+  (SDRAM_BANK_ADDR + sizeof(o_color_t) * ((LCD_WIDTH) * (y) + (x)))
 
 #define get_plane_addr(plane) \
-  (SDRAM_BANK_ADDR + (plane) * sizeof(color_t) * lcd.width * lcd.height)
+  (SDRAM_BANK_ADDR + (plane) * sizeof(color_t) * LCD_WIDTH * LCD_HEIGHT)
 
 enum rgb888_enum {
   aqua       = 0x00ffff,
