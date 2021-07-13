@@ -16,8 +16,8 @@ static vmem_addr_t char2bitmap(char ch, uint8_t plane);
 
 /* singleton */
 lcd_configs_t lcd = {
-  .width  = 800,
-  .height = 480,
+  .width  = LCD_WIDTH,
+  .height = LCD_HEIGHT,
   .layer  = 0,
   .font   = &Font16x24,
   .fore_color = black,
