@@ -142,7 +142,7 @@ lcd_init()
 static INLINE void
 lcd_clear()
 {
-  fill_region(0, 0, LCD_WIDTH, LCD_HEIGHT, lightgreen);
+  fill_region(0, 0, LCD_WIDTH, LCD_HEIGHT, lcd.back_color);
 }
 
 /**
