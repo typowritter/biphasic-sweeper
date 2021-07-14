@@ -72,6 +72,7 @@ void Error_Handler(void);
 #define ADS124S_CS_GPIO_Port GPIOD
 #define ADS124S_DRDY_Pin GPIO_PIN_3
 #define ADS124S_DRDY_GPIO_Port GPIOD
+#define ADS124S_DRDY_EXTI_IRQn EXTI3_IRQn
 #define AD9854_A2_Pin GPIO_PIN_7
 #define AD9854_A2_GPIO_Port GPIOB
 #define SPI1_SCK_Pin GPIO_PIN_3
