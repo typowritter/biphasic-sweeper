@@ -97,10 +97,6 @@ void Error_Handler(void);
 #define AD9854_D6_GPIO_Port GPIOC
 #define AD9854_D5_Pin GPIO_PIN_6
 #define AD9854_D5_GPIO_Port GPIOC
-#define GTP_RESET_Pin GPIO_PIN_7
-#define GTP_RESET_GPIO_Port GPIOG
-#define GTP_INT_Pin GPIO_PIN_3
-#define GTP_INT_GPIO_Port GPIOG
 #define AD9854_D0_Pin GPIO_PIN_1
 #define AD9854_D0_GPIO_Port GPIOC
 #define AD9854_D1_Pin GPIO_PIN_2
@@ -115,8 +111,6 @@ void Error_Handler(void);
 #define AD9854_OSK_GPIO_Port GPIOB
 #define AD9854_UDCL_Pin GPIO_PIN_7
 #define AD9854_UDCL_GPIO_Port GPIOA
-#define LCD_BL_Pin GPIO_PIN_13
-#define LCD_BL_GPIO_Port GPIOD
 #define AD9854_D3_Pin GPIO_PIN_4
 #define AD9854_D3_GPIO_Port GPIOC
 #define LED_G_Pin GPIO_PIN_1
