@@ -23,8 +23,8 @@ ads124s_registers ads124s_regs = {
   .gpiocon  = {.addr = 0x11, .value = 0x00 },
 };
 
-static uint8_t tx_buffer[5];  /* transmit up to 3 bytes in one run */
-static uint8_t rx_buffer[5];  /* if enable STATUS or CRC byte, must be increased */
+static uint8_t tx_buffer[6];  /* transmit up to 5 bytes in one run */
+static uint8_t rx_buffer[6];  /* minimum size required by STATUS or CRC byte */
 
 void ads124s_init()
 {
@@ -32,6 +32,10 @@ void ads124s_init()
   delay_ms(2);  /* td(RSSC) = 4096 * tCLK */
   ads124s_set_value(ads124s_fl_por, 0);
   ads124s_update_matching_reg(ads124s_fl_por);
+  ads124s_set_value(ads124s_conv_mode, ads124s_mode_cont);
+  ads124s_update_matching_reg(ads124s_conv_mode);
+  ads124s_set_value(ads124s_status_byte_en, 1);
+  ads124s_update_matching_reg(ads124s_status_byte_en);
 }
 
 void ads124s_reset()
@@ -78,7 +82,36 @@ void ads124s_write_regs(ads124s_register* reg, uint8_t num, uint8_t* data)
   ads124s_unselect();
 }
 
-void ads124s_read_conv_data(uint32_t *conv_data)
+ads124s_conv_result_t ads124s_read_conv_data()
 {
-  undefined();
+  tx_buffer[0] = ads124s_cmd_rdata ;
+  tx_buffer[1] = ads124s_cmd_nop; /* STATUS */
+  tx_buffer[2] = ads124s_cmd_nop; /* Data 1 */
+  tx_buffer[3] = ads124s_cmd_nop; /* Data 2 */
+  tx_buffer[4] = ads124s_cmd_nop; /* Data 3 */
+
+  ads124s_select();
+
+  HAL_SPI_TransmitReceive(&ads124s_dev, tx_buffer, rx_buffer,
+    5, ads124s_spi_timeout);
+
+  ads124s_conv_result_t res;
+  if (ads124s_get_value(ads124s_status_byte_en))
+  {
+    res.status = rx_buffer[1];
+    res.crc    = rx_buffer[5];  /* garbage if not enabled crc */
+    res.data   = rx_buffer[4];
+    res.data  |= rx_buffer[3] << 8;
+    res.data  |= rx_buffer[2] << 16;
+  }
+  else
+  {
+    res.crc    = rx_buffer[4];  /* garbage if not enabled crc */
+    res.data   = rx_buffer[3];
+    res.data  |= rx_buffer[2] << 8;
+    res.data  |= rx_buffer[1] << 16;
+  }
+
+  ads124s_unselect();
+  return res;
 }

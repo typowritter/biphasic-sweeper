@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dma2d.h"
+#include "gpio_wrapper.h"
 #include "i2c.h"
 #include "ltdc.h"
 #include "spi.h"
@@ -111,17 +112,19 @@ int main(void)
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
-  lcd_init();
+  // lcd_init();
   delay_init();
   // ad9854_init();
-  // ads124s_init();
+  ads124s_init();
 
   LED_SetColor(LED_G);
 
-  disp_string(0, 0, "ABCDEFG: 1 + 2 = 3, but haha");
-  draw_rect(16, 24, 80, 80, 5);
-  draw_rect(200, 100, 80, 80, 6);
+  // disp_string(0, 0, "ABCDEFG: 1 + 2 = 3, but haha");
+  // draw_rect(16, 24, 80, 80, 5);
+  // draw_rect(200, 100, 80, 80, 6);
 
+
+  gpio_set_high(ads124s_pin_sync);
   /* USER CODE END 2 */
 
   /* Infinite loop */

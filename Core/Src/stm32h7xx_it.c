@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+#include "ads124s0x.h"
 #include "main.h"
 #include "stm32h7xx_it.h"
 /* Private includes ----------------------------------------------------------*/
@@ -233,7 +234,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == ADS124S_DRDY_Pin)
   {
-    tty_print("falling edge.\r\n");
+    ads124s_conv_result_t res = ads124s_read_conv_data();
+    tty_print("STATUS: 0x%X\r\nConv: %d\r\n\n", res.status, res.data);
   }
 }
 /* USER CODE END 1 */

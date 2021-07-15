@@ -53,6 +53,12 @@ typedef struct
   uint8_t offset;
 } ads124s_register_bit;
 
+typedef struct {
+  uint32_t data;
+  uint8_t  status;
+  uint8_t  crc;
+} ads124s_conv_result_t;
+
 typedef struct
 {
   ads124s_register id;
@@ -209,6 +215,21 @@ typedef enum {
 } ads124s_pga_gain_t;
 
 typedef enum {
+  ads124s_clksrc_internal = 0,
+  ads124s_clksrc_external = 1,
+} ads124s_clksrc_t;
+
+typedef enum {
+  ads124s_mode_cont   = 0,
+  ads124s_mode_single = 1,
+} ads124s_mode_t;
+
+typedef enum {
+  ads124s_filter_sinc3      = 0,
+  ads124s_filter_lowlatency = 1,
+} ads124s_filter_t;
+
+typedef enum {
   ads124s_datarate_x2_5   = 0x00,
   ads124s_datarate_x5     = 0x01,
   ads124s_datarate_x10    = 0x02,
@@ -310,9 +331,8 @@ static INLINE void      ads124s_performSystemGainCalibration();
 static INLINE void      ads124s_performSelfOffsetCalibration();
 
 void ads124s_init();
-void ads124s_test();
 void ads124s_reset();
-void ads124s_read_conv_data(uint32_t *conv_data);
+ads124s_conv_result_t ads124s_read_conv_data();
 
 /**
  * reads multiple registers from device.
