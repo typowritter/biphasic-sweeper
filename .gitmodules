@@ -1,3 +1,4 @@
 [submodule "Doc"]
 	path = Doc
 	url = git@github.com:typowritter/eedesign-doc.git
+	branch = master
