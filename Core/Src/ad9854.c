@@ -33,6 +33,9 @@ void ad9854_init()
   ad9854_set_bits(ad9854_mode, ad9854_mode_single);
   ad9854_set_bits(ad9854_invsinc_byp, 1);
   ad9854_set_bits(ad9854_osk_en, 0);
+  ad9854_set_bits(ad9854_pll_range, 1);
+  ad9854_set_bits(ad9854_pll_bypass, 0);
+  ad9854_set_bits(ad9854_pll_mult, 10);  /* 最大稳定输出：10倍->70MHz */
   ad9854_update_reg(&ad9854_regs.cr);
 
   delay_ms(10);
@@ -47,8 +50,9 @@ void ad9854_reset()
 
 void freq_convert(uint64_t freq)
 {
+  uint64_t mult = ad9854_get_bits(ad9854_pll_mult);
   /* FTW = (freq × 2^N)/SYSCLK */
-  ad9854_regs.ftw1.value = freq * (((uint64_t)1<<48)/ad9854_sysclk);
+  ad9854_regs.ftw1.value = freq/mult * (((uint64_t)1<<48)/ad9854_sysclk);
   ad9854_update_reg(&ad9854_regs.ftw1);
 }
 
@@ -100,7 +104,7 @@ void ad9854_write_parallel(ad9854_register* reg, uint64_t value)
   gpio_set_low(ad9854_pin_udclk);
 }
 
-#else
+#else /* serial interface */
 uint64_t ad9854_read_serial(ad9854_register* reg)
 {
   todo();

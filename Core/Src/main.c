@@ -100,7 +100,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   delay_init();
-  // ad9854_init();
+  ad9854_init();
   ads124s_init();
 
   LED_SetColor(LED_G);
@@ -115,6 +115,12 @@ int main(void)
 
   ads124s_select();
   gpio_set_high(ads124s_pin_sync);  // 开始转换
+
+  /* ad9854 config */
+  // 功能测试
+  uint64_t freq = 100000;
+  freq_convert(freq);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
