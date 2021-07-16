@@ -250,7 +250,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   if (GPIO_Pin == ADS124S_DRDY_Pin)
   {
     ads124s_conv_result_t res = ads124s_read_conv_data();
-    tty_print("STATUS: 0x%X\r\nConv: %d\r\n\n", res.status, res.data);
+    tty_print("STATUS: 0x%X\r\nConv: 0x%X\r\n\n", res.status, res.data);
+  }
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == UART5)
+  {
+
   }
 }
 /* USER CODE END 1 */
