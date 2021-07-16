@@ -30,12 +30,9 @@ void ads124s_init()
 {
   ads124s_reset();
   delay_ms(2);  /* td(RSSC) = 4096 * tCLK */
-  ads124s_set_value(ads124s_fl_por, 0);
-  ads124s_update_matching_reg(ads124s_fl_por);
-  ads124s_set_value(ads124s_conv_mode, ads124s_mode_cont);
-  ads124s_update_matching_reg(ads124s_conv_mode);
-  ads124s_set_value(ads124s_status_byte_en, 1);
-  ads124s_update_matching_reg(ads124s_status_byte_en);
+  ads124s_update_value(ads124s_fl_por, 0);
+  ads124s_update_value(ads124s_ref_sel, ads124s_refsel_internal);
+  ads124s_update_value(ads124s_ref_conf, ads124s_refcon_always_on);
 }
 
 void ads124s_reset()
@@ -89,11 +86,12 @@ ads124s_conv_result_t ads124s_read_conv_data()
   tx_buffer[2] = ads124s_cmd_nop; /* Data 1 */
   tx_buffer[3] = ads124s_cmd_nop; /* Data 2 */
   tx_buffer[4] = ads124s_cmd_nop; /* Data 3 */
+  tx_buffer[5] = ads124s_cmd_nop; /* CRC */
 
   ads124s_select();
 
   HAL_SPI_TransmitReceive(&ads124s_dev, tx_buffer, rx_buffer,
-    5, ads124s_spi_timeout);
+    6, ads124s_spi_timeout);
 
   ads124s_conv_result_t res;
   if (ads124s_get_value(ads124s_status_byte_en))

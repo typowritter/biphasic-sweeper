@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "tty.h"
+#include "ads124s0x.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

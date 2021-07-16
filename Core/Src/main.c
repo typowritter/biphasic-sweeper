@@ -29,7 +29,7 @@
 #include "led.h"
 #include "tty.h"
 #include "delay.h"
-// #include "ad9854.h"
+#include "ad9854.h"
 #include "ads124s0x.h"
 /* USER CODE END Includes */
 
@@ -105,7 +105,16 @@ int main(void)
 
   LED_SetColor(LED_G);
 
-  gpio_set_high(ads124s_pin_sync);
+  /* ads124s08 config */
+  // 功能测试
+  ads124s_update_value(ads124s_conv_mode, ads124s_mode_cont);     // 连续转换
+  ads124s_update_value(ads124s_status_byte_en, 1);                // 启用STATUS位
+  ads124s_update_value(ads124s_datarate, ads124s_datarate_x2_5);  // 转换速率2.5/s
+  ads124s_update_value(ads124s_vb_ainc, 1);                       // AINCOM连接到Vbias
+  ads124s_update_value(ads124s_sys_mon_conf, ads124s_sysmon_avdd_avss_4);
+
+  ads124s_select();
+  gpio_set_high(ads124s_pin_sync);  // 开始转换
   /* USER CODE END 2 */
 
   /* Infinite loop */

@@ -254,6 +254,11 @@ typedef enum {
 } ads124s_refmon_t;
 
 typedef enum {
+  ads124s_refbuf_enabled = 0,
+  ads124s_refbuf_disable = 1,
+} ads124s_refbuf_t;
+
+typedef enum {
   ads124s_refsel_p0n0     = 0x00,
   ads124s_refsel_p1n1     = 0x01,
   ads124s_refsel_internal = 0x02,
@@ -325,6 +330,7 @@ static INLINE void      ads124s_read_reg(ads124s_register* reg);
 static INLINE void      ads124s_write_reg(ads124s_register* reg, uint8_t byte);
 static INLINE void      ads124s_send_cmd(uint8_t cmd);
 static INLINE void      ads124s_update_reg(ads124s_register* reg);
+static INLINE void      ads124s_update_value(ads124s_register_bit field, uint8_t value);
 static INLINE void      ads124s_update_matching_reg(ads124s_register_bit field);
 static INLINE void      ads124s_performSystemOffsetCalibration();
 static INLINE void      ads124s_performSystemGainCalibration();
@@ -403,6 +409,13 @@ static INLINE void
 ads124s_update_reg(ads124s_register* reg)
 {
   ads124s_write_reg(reg, reg->value);
+}
+
+static INLINE void
+ads124s_update_value(ads124s_register_bit field, uint8_t value)
+{
+  ads124s_set_value(field, value);
+  ads124s_update_matching_reg(field);
 }
 
 static INLINE void
