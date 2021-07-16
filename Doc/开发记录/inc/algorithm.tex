@@ -1,0 +1,25 @@
+\usepackage[ruled,vlined]{algorithm2e}
+
+\iffalse
+    \begin{algorithm}[H]
+      \DontPrintSemicolon
+      \caption{输入输出按方形分块}
+      \SetKwFunction{ComputeBlocked}{ComputeBlocked}
+      \SetKwFunction{ComputeKernel}{ComputeKernel}
+      \SetKw{KwBy}{by}
+      % \SetKwFor{For}{for (}{) $\lbrace$}{$\rbrace$}
+
+      \tcp{矩阵按照行优先储存为一维数组}
+      \tcc{符号约定：$\mathbf{A}_{ik} = \&A[i*N+j]$}
+      \SetKwProg{Fn}{function}{:}{}
+      \Fn{\ComputeBlocked{$A$, $B$, $C$, $N$, $BS$}}{
+        \For{$j \gets 0$ \KwTo $N$ \KwBy $BS$}{
+          \For{$i \gets 0$ \KwTo $N$ \KwBy $BS$}{
+            \For{$k \gets 0$ \KwTo $N$ \KwBy $BS$}{
+              ComputeKernel($\mathbf{A}_{ik}$, $\mathbf{B}_{kj}$, $\mathbf{C}_{ij}$, $N$)
+            }
+          }
+        }
+      }
+    \end{algorithm}
+\fi

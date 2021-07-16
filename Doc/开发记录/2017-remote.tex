@@ -1,0 +1,27 @@
+\section{2017年国赛-远程幅频特性测试装置}
+\subsection{器件配置}
+\subsubsection{AD9854}
+在本题中我们需要使用信号源对待测网络进行扫频，根据频率和相应采集到的电压进行计算，
+因此将AD9854配置为单频模式，方便灵活控制频率；由于输出接到后级运放，因此不需要OSK功能。
+同时为避免高频时出现欠采样，启用PLL并设置到10倍频
+（板上晶振$\SI{30}{MHz}\times 10 = \SI{300}{MHz}$，
+即AD9854最大可设置的SYSCLK频率）
+
+在程序里如下配置：
+
+\begin{cbox}{ad9854.c}
+  /* 外部更新 */
+  ad9854_set_bits(ad9854_updclk, ad9854_updclk_external);
+  /* 单频模式 */
+  ad9854_set_bits(ad9854_mode, ad9854_mode_single);
+  /* 旁路反Sinc滤波器 */
+  ad9854_set_bits(ad9854_invsinc_byp, 1);
+  /* 关闭输出键控 */
+  ad9854_set_bits(ad9854_osk_en, 0);
+  /* 启用PLL */
+  ad9854_set_bits(ad9854_pll_bypass, 0);
+  /* 200MHz以上需设为1 */
+  ad9854_set_bits(ad9854_pll_range, 1);
+  /* 10倍频，经测试至少能稳定输出至70MHz而不出现欠采样 */
+  ad9854_set_bits(ad9854_pll_mult, 10);
+\end{cbox}
