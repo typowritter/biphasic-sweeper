@@ -115,12 +115,16 @@ void Error_Handler(void);
 #define AD9854_D3_GPIO_Port GPIOC
 #define LED_G_Pin GPIO_PIN_1
 #define LED_G_GPIO_Port GPIOB
+#define TFT_RX_Pin GPIO_PIN_12
+#define TFT_RX_GPIO_Port GPIOB
 #define LED_B_Pin GPIO_PIN_3
 #define LED_B_GPIO_Port GPIOA
 #define AD9854_D4_Pin GPIO_PIN_5
 #define AD9854_D4_GPIO_Port GPIOC
 #define LED_R_Pin GPIO_PIN_0
 #define LED_R_GPIO_Port GPIOB
+#define TFT_TX_Pin GPIO_PIN_13
+#define TFT_TX_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
