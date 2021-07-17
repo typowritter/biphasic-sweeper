@@ -56,6 +56,9 @@ extern char STRBUF[READSTR_MAX_BUFSIZE];
     #define GETCHAR               fgetc
 #endif  /* __GNUC__ */
 
+PUTCHAR_PROTOTYPE;
+GETCHAR_PROTOTYPE;
+
 /* -------------------------------------------------------- */
 
 void putstr(char *ptr);

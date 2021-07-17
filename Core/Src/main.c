@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "spi.h"
+#include "stm32h7xx_hal_gpio.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -105,21 +106,21 @@ int main(void)
 
   LED_SetColor(LED_G);
 
+  HAL_GPIO_WritePin(DCR_SWITCH_GPIO_Port, DCR_SWITCH_Pin, GPIO_PIN_SET);
+
   /* ads124s08 config */
   // 功能测试
-  ads124s_update_value(ads124s_conv_mode, ads124s_mode_cont);     // 连续转换
+  ads124s_update_value(ads124s_conv_mode, ads124s_mode_cont);
+  ads124s_update_value(ads124s_pga_en, 0);            // 旁路PGA
   ads124s_update_value(ads124s_status_byte_en, 1);                // 启用STATUS位
   ads124s_update_value(ads124s_datarate, ads124s_datarate_x2_5);  // 转换速率2.5/s
-  ads124s_update_value(ads124s_vb_ainc, 1);                       // AINCOM连接到Vbias
-  ads124s_update_value(ads124s_sys_mon_conf, ads124s_sysmon_avdd_avss_4);
+  // ads124s_update_value(ads124s_sys_mon_conf, ads124s_sysmon_avdd_avss_4);
+
+  ads124s_update_value(ads124s_muxp, ads124s_chan_ain1);
+  ads124s_update_value(ads124s_muxn, ads124s_chan_ain2);
 
   ads124s_select();
   gpio_set_high(ads124s_pin_sync);  // 开始转换
-
-  /* ad9854 config */
-  // 功能测试
-  uint64_t freq = 100000;
-  freq_convert(freq);
 
   /* USER CODE END 2 */
 
@@ -127,7 +128,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    delay_ms(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

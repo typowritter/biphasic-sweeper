@@ -35,7 +35,7 @@ void ad9854_init()
   ad9854_set_bits(ad9854_osk_en, 0);
   ad9854_set_bits(ad9854_pll_range, 1);
   ad9854_set_bits(ad9854_pll_bypass, 0);
-  ad9854_set_bits(ad9854_pll_mult, 10);  /* 最大稳定输出：10倍->70MHz */
+  ad9854_set_bits(ad9854_pll_mult, 4);  /* 最大稳定输出：10倍->70MHz */
   ad9854_update_reg(&ad9854_regs.cr);
 
   delay_ms(10);

@@ -87,6 +87,8 @@ void Error_Handler(void);
 #define AD9854_A3_GPIO_Port GPIOB
 #define AD9854_WR_Pin GPIO_PIN_13
 #define AD9854_WR_GPIO_Port GPIOG
+#define DCR_SWITCH_Pin GPIO_PIN_2
+#define DCR_SWITCH_GPIO_Port GPIOD
 #define DEBUG_RX_Pin GPIO_PIN_10
 #define DEBUG_RX_GPIO_Port GPIOA
 #define DEBUG_TX_Pin GPIO_PIN_9

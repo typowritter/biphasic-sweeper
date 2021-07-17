@@ -23,8 +23,7 @@
 #include "stm32h7xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "tty.h"
-#include "ads124s0x.h"
+#include "sweep.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -249,8 +248,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (GPIO_Pin == ADS124S_DRDY_Pin)
   {
-    ads124s_conv_result_t res = ads124s_read_conv_data();
-    tty_print("STATUS: 0x%X\r\nConv: 0x%X\r\n\n", res.status, res.data);
+    adc_conv_complete_cb();
   }
 }
 

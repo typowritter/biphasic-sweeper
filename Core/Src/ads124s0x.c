@@ -31,8 +31,8 @@ void ads124s_init()
   ads124s_reset();
   delay_ms(2);  /* td(RSSC) = 4096 * tCLK */
   ads124s_update_value(ads124s_fl_por, 0);
-  ads124s_update_value(ads124s_ref_sel, ads124s_refsel_internal);
-  ads124s_update_value(ads124s_ref_conf, ads124s_refcon_always_on);
+  ads124s_update_value(ads124s_ref_sel, ads124s_refsel_p0n0);
+  ads124s_update_value(ads124s_ref_conf, ads124s_refcon_off);
 }
 
 void ads124s_reset()
