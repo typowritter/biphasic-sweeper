@@ -12,7 +12,7 @@
 
 DDS：AD9854（[评估板链接](https://detail.tmall.com/item.htm?id=552781984800)）
 
-ADC：ADS124S08（[TI链接](https://www.ti.com/product/ADS124S08)）
+ADC：ADS124S08（[TI裸片](https://www.ti.com/product/ADS124S08) | [TI评估板](https://www.ti.com/tool/ADS124S08EVM)）
 
 TFT组态屏：广州大彩DC10600GM070_1111_1T（[官网](http://www.gz-dc.com/)）
 
