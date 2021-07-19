@@ -12,12 +12,12 @@ extern "C" {
 #define R_SRC   626.0   /* 源电阻 */
 #define V_REF   3.0069  /* ADC参考电压 */
 
-#define DCR_CHAN_P      ads124s_chan_ain1   /* DCR测量输入端 */
+#define DCR_CHAN_P      ads124s_chan_ain4   /* DCR测量输入端 */
 #define DCR_CHAN_N      ads124s_chan_ain2   /* DCR测量接地端 */
-#define IDAC_CHAN_P     ads124s_chan_ain4   /* IDAC差分输入端 */
-#define IDAC_CHAN_N     ads124s_chan_ain0   /* IDAC差分输入端 */
-#define QDAC_CHAN_P     ads124s_chan_ain11  /* QDAC差分输入端 */
-#define QDAC_CHAN_N     ads124s_chan_ain10  /* QDAC差分输入端 */
+#define IDAC_CHAN_P     ads124s_chan_ain0   /* IDAC差分输入端 */
+#define IDAC_CHAN_N     ads124s_chan_ain1   /* IDAC差分输入端 */
+#define QDAC_CHAN_P     ads124s_chan_ain8   /* QDAC差分输入端 */
+#define QDAC_CHAN_N     ads124s_chan_ain9   /* QDAC差分输入端 */
 
 /* 回调函数：ADC转换完成 */
 void adc_conv_complete_cb();

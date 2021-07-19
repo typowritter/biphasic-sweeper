@@ -116,7 +116,7 @@ int main(void)
   ads124s_update_value(ads124s_datarate, ads124s_datarate_x2_5);  // 转换速率2.5/s
   // ads124s_update_value(ads124s_sys_mon_conf, ads124s_sysmon_avdd_avss_4);
 
-  ads124s_update_value(ads124s_muxp, ads124s_chan_ain1);
+  ads124s_update_value(ads124s_muxp, ads124s_chan_ain4);
   ads124s_update_value(ads124s_muxn, ads124s_chan_ain2);
 
   ads124s_select();
