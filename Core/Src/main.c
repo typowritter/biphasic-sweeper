@@ -32,7 +32,7 @@
 #include "delay.h"
 #include "ad9854.h"
 #include "ads124s0x.h"
-#include "sweep.h"
+#include "measure.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,8 +107,8 @@ int main(void)
 
   LED_SetColor(LED_G);
 
-  sweep_init();
-  sweep_task_add(TASK_SINGLE);
+  measure_init();
+  measure_task_add(TASK_SINGLE);
 
   /* USER CODE END 2 */
 
@@ -116,7 +116,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    sweep_task_dispatch();
+    measure_task_dispatch();
 
     /* USER CODE END WHILE */
 

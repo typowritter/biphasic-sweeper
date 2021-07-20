@@ -1,5 +1,5 @@
-#ifndef __SWEEP_H
-#define __SWEEP_H
+#ifndef __measure_H
+#define __measure_H
 
 #include "main.h"
 #ifdef  __cplusplus
@@ -29,7 +29,7 @@ typedef enum {
   TASK_IDLE,
   TASK_SINGLE,
   TASK_AC_ESR,
-} sweep_task_t;
+} measure_task_t;
 
 extern char g_type;
 extern double g_mag2, g_tgp;
@@ -40,9 +40,9 @@ void adc_conv_complete_cb();
 /* DCR测量函数 */
 void dcr_measure();
 
-void sweep_init();
-void sweep_task_add(sweep_task_t task);
-void sweep_task_dispatch();
+void measure_init();
+void measure_task_add(measure_task_t task);
+void measure_task_dispatch();
 
 void ac_esr_measure();
 
@@ -59,4 +59,4 @@ double g1(double mag2, double tgp, double esr);
 #ifdef  __cplusplus
 }
 #endif
-#endif /* __SWEEP_H */
+#endif /* __measure_H */

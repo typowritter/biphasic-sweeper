@@ -1,5 +1,5 @@
 #include <math.h>
-#include "sweep.h"
+#include "measure.h"
 #include "tty.h"
 #include "delay.h"
 
@@ -8,7 +8,7 @@
 static void adc_channel_setup(int channel);
 static void dds_setup(int channel);
 
-static sweep_task_t g_task;
+static measure_task_t g_task;
 
 static struct
 {
@@ -27,7 +27,7 @@ void adc_conv_complete_cb()
   g_adc.new_data = true;
 }
 
-void sweep_init()
+void measure_init()
 {
   g_task = TASK_IDLE;
   ads124s_update_value(ads124s_conv_mode, ads124s_mode_single);
@@ -77,7 +77,7 @@ static void dds_setup(int channel)
   }
 }
 
-void sweep_task_add(sweep_task_t task)
+void measure_task_add(measure_task_t task)
 {
   if (g_task != task)
   {
@@ -99,7 +99,7 @@ void sweep_task_add(sweep_task_t task)
   }
 }
 
-void sweep_task_dispatch()
+void measure_task_dispatch()
 {
   if (g_adc.new_data)
   {

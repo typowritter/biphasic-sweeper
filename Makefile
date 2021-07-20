@@ -39,7 +39,7 @@ C_SOURCES =  \
 Core/Src/main.c \
 Core/Src/ad9854.c \
 Core/Src/ads124s0x.c \
-Core/Src/sweep.c \
+Core/Src/measure.c \
 Core/Src/led.c \
 Core/Src/tty.c \
 Core/Src/gpio.c \
