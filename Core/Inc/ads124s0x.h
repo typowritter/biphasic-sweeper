@@ -329,6 +329,7 @@ static INLINE uint8_t   ads124s_get_value(ads124s_register_bit field);
 static INLINE void      ads124s_read_reg(ads124s_register* reg);
 static INLINE void      ads124s_write_reg(ads124s_register* reg, uint8_t byte);
 static INLINE void      ads124s_send_cmd(uint8_t cmd);
+static INLINE void      ads124s_set_channel(ads124s_chan_t p, ads124s_chan_t n);
 static INLINE void      ads124s_update_reg(ads124s_register* reg);
 static INLINE void      ads124s_update_value(ads124s_register_bit field, uint8_t value);
 static INLINE void      ads124s_update_matching_reg(ads124s_register_bit field);
@@ -403,6 +404,14 @@ static INLINE void
 ads124s_send_cmd(uint8_t cmd)
 {
   HAL_SPI_Transmit(&ads124s_dev, lit2addr(cmd), 1, ads124s_spi_timeout);
+}
+
+static INLINE void
+ads124s_set_channel(ads124s_chan_t p, ads124s_chan_t n)
+{
+  ads124s_set_value(ads124s_muxp, p);
+  ads124s_set_value(ads124s_muxn, n);
+  ads124s_update_reg(&ads124s_regs.inpmux);
 }
 
 static INLINE void
