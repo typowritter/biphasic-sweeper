@@ -107,7 +107,7 @@ int main(void)
   LED_SetColor(LED_G);
 
   measure_init();
-  measure_task_start(TASK_SINGLE);
+  measure_task_start(TASK_AC_ESR);
 
   /* USER CODE END 2 */
 

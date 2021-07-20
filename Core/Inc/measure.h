@@ -12,12 +12,6 @@ extern "C" {
 #include "ads124s0x.h"
 #include "gpio_wrapper.h"
 
-#define V_SRC   3.0119  /* 源电压 */
-#define R_SRC   626.0   /* 直流源电阻 */
-#define R_src   100.0   /* 交流源电阻 */
-#define V_REF   3.0069  /* ADC参考电压 */
-#define VP_2    3.4225  /* 驱动器正弦信号峰值平方 */
-
 #define DCR_CHAN_P      ads124s_chan_ain4   /* DCR测量输入端 */
 #define DCR_CHAN_N      ads124s_chan_ain0   /* DCR测量接地端 */
 #define IDAC_CHAN_P     ads124s_chan_ain1   /* IDAC差分输入端 */
