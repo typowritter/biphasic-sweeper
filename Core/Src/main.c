@@ -32,6 +32,7 @@
 #include "delay.h"
 #include "ad9854.h"
 #include "ads124s0x.h"
+#include "sweep.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,21 +107,8 @@ int main(void)
 
   LED_SetColor(LED_G);
 
-  HAL_GPIO_WritePin(DCR_SWITCH_GPIO_Port, DCR_SWITCH_Pin, GPIO_PIN_SET);
-
-  /* ads124s08 config */
-  // 功能测试
-  ads124s_update_value(ads124s_conv_mode, ads124s_mode_cont);
-  ads124s_update_value(ads124s_pga_en, 0);            // 旁路PGA
-  ads124s_update_value(ads124s_status_byte_en, 1);                // 启用STATUS位
-  ads124s_update_value(ads124s_datarate, ads124s_datarate_x2_5);  // 转换速率2.5/s
-  // ads124s_update_value(ads124s_sys_mon_conf, ads124s_sysmon_avdd_avss_4);
-
-  ads124s_update_value(ads124s_muxp, ads124s_chan_ain4);
-  ads124s_update_value(ads124s_muxn, ads124s_chan_ain2);
-
-  ads124s_select();
-  gpio_set_high(ads124s_pin_sync);  // 开始转换
+  sweep_init();
+  sweep_task_add(TASK_SINGLE);
 
   /* USER CODE END 2 */
 
@@ -128,6 +116,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    sweep_task_dispatch();
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
