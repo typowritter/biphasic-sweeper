@@ -42,7 +42,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-// DEF_GPIO(test_pin, TEST_OUTPUT_GPIO_Port, TEST_OUTPUT_Pin);
 
 /* USER CODE END PD */
 
@@ -108,7 +107,7 @@ int main(void)
   LED_SetColor(LED_G);
 
   measure_init();
-  measure_task_add(TASK_SINGLE);
+  measure_task_start(TASK_SINGLE);
 
   /* USER CODE END 2 */
 
@@ -116,7 +115,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    measure_task_dispatch();
+    measure_task_poll();
 
     /* USER CODE END WHILE */
 

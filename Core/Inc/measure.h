@@ -5,6 +5,8 @@
 #ifdef  __cplusplus
 extern "C" {
 #endif
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-const-variable"
 
 #include "ad9854.h"
 #include "ads124s0x.h"
@@ -37,25 +39,12 @@ extern double g_mag2, g_tgp;
 /* 回调函数：ADC转换完成 */
 void adc_conv_complete_cb();
 
-/* DCR测量函数 */
-void dcr_measure();
-
 void measure_init();
-void measure_task_add(measure_task_t task);
-void measure_task_dispatch();
+void measure_task_start(measure_task_t task);
+void measure_task_poll();
+void measure_task_done();
 
-void ac_esr_measure();
-
-void ac_esr_solve(char type, double mag2, double tgp, double w,
-  double esr0, double esr1, double err, int imax);
-
-// freq_resp_t get_normal_response(char type, double vw, double esr);
-
-double f(double mag2, double esr);
-double g(double mag2, double esr);
-double f1(double mag2, double tgp, double esr);
-double g1(double mag2, double tgp, double esr);
-
+#pragma GCC diagnostic pop
 #ifdef  __cplusplus
 }
 #endif

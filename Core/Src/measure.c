@@ -5,8 +5,20 @@
 
 #define TRANSFORM(x) (1000/(4.8212859/x - 1.6032056))
 
+#define TASK
 static void adc_channel_setup(int channel);
 static void dds_setup(int channel);
+/* 直流特性 */
+static void TASK dcr_measure();
+/* 交流特性 */
+static void TASK ac_esr_measure();
+static void ac_esr_solve(char type, double mag2, double tgp, double w,
+  double esr0, double esr1, double err, int imax);
+/* 辅助函数，推导、定义见文档 */
+static double f(double mag2, double esr);
+static double g(double mag2, double esr);
+static double f1(double mag2, double tgp, double esr);
+static double g1(double mag2, double tgp, double esr);
 
 static measure_task_t g_task;
 
@@ -36,6 +48,54 @@ void measure_init()
   ads124s_update_value(ads124s_datarate, ads124s_datarate_x20);
 
   ads124s_select();
+}
+
+void measure_task_start(measure_task_t task)
+{
+  if (g_task != task)
+  {
+    g_task = task;
+    switch (g_task)
+    {
+      case TASK_SINGLE:
+        g_adc.channel = S;
+        gpio_set_high(dcr_switch_pin);
+        break;
+      case TASK_AC_ESR:
+        g_adc.channel = I;
+        gpio_set_low(dcr_switch_pin);
+        break;
+      default: break;
+    }
+    dds_setup(g_adc.channel);
+    adc_channel_setup(g_adc.channel);
+  }
+}
+
+void measure_task_poll()
+{
+  if (g_adc.new_data)
+  {
+    g_adc.new_data = false;
+    switch (g_task)
+    {
+      case TASK_SINGLE: dcr_measure(); break;
+      case TASK_AC_ESR: ac_esr_measure(); break;
+      default: break;
+    }
+
+    gpio_set_low(ads124s_pin_sync);
+    if (g_task != TASK_IDLE)
+    {
+      delay_us(1);
+      gpio_set_high(ads124s_pin_sync);
+    }
+  }
+}
+
+void measure_task_done()
+{
+  g_task = TASK_IDLE;
 }
 
 static void adc_channel_setup(int channel)
@@ -77,56 +137,8 @@ static void dds_setup(int channel)
   }
 }
 
-void measure_task_add(measure_task_t task)
-{
-  if (g_task != task)
-  {
-    g_task = task;
-    switch (g_task)
-    {
-      case TASK_SINGLE:
-        g_adc.channel = S;
-        gpio_set_high(dcr_switch_pin);
-        break;
-      case TASK_AC_ESR:
-        g_adc.channel = I;
-        gpio_set_low(dcr_switch_pin);
-        break;
-      default: break;
-    }
-    dds_setup(g_adc.channel);
-    adc_channel_setup(g_adc.channel);
-  }
-}
-
-void measure_task_dispatch()
-{
-  if (g_adc.new_data)
-  {
-    g_adc.new_data = false;
-    switch (g_task)
-    {
-      case TASK_SINGLE: dcr_measure(); break;
-      case TASK_AC_ESR: ac_esr_measure(); break;
-      default: break;
-    }
-
-    gpio_set_low(ads124s_pin_sync);
-    if (g_task != TASK_IDLE)
-    {
-      delay_us(1);
-      gpio_set_high(ads124s_pin_sync);
-    }
-  }
-}
-
-static void task_done()
-{
-  g_task = TASK_IDLE;
-}
-
 /* DCR测量函数 */
-void dcr_measure()
+static void TASK dcr_measure()
 {
   static double sum = 0;
   static int samples = 0;
@@ -147,11 +159,11 @@ void dcr_measure()
   else
   {
     tty_print("AVG: %.4f\r\n\n", sum/samples);
-    task_done();
+    measure_task_done();
   }
 }
 
-void ac_esr_measure()
+static void TASK ac_esr_measure()
 {
   static double vol_i, vol_q;
   static double sum = 0;
@@ -187,7 +199,7 @@ void ac_esr_measure()
       ac_esr_solve('C', mag2/VP_2, tgp, 2*M_PI*1000, 1, 10, 1e-6, 1000);
 
       samples = 99999;
-      task_done();
+      measure_task_done();
     }
   }
   else
@@ -196,7 +208,7 @@ void ac_esr_measure()
   }
 }
 
-void ac_esr_solve(char type, double mag2, double tgp, double w,
+static void ac_esr_solve(char type, double mag2, double tgp, double w,
   double esr0, double esr1, double err, int imax)
 {
   // if (type == 'L')
@@ -271,23 +283,23 @@ void get_normal_response(char type, double vw, double esr)
   }
 }
 */
-double f(double mag2, double esr)
+static double f(double mag2, double esr)
 {
   return (1-mag2)/(mag2*(R_src+esr)*(R_src+esr)-esr*2);
 }
 
-double g(double mag2, double esr)
+static double g(double mag2, double esr)
 {
   return 1/f(mag2, esr);
 }
 
-double f1(double mag2, double tgp, double esr)
+static double f1(double mag2, double tgp, double esr)
 {
   return tgp*tgp * pow(f(mag2, esr) * esr * (esr+R_src) + 1, 2)
          - R_src*R_src*f(mag2, esr);
 }
 
-double g1(double mag2, double tgp, double esr)
+static double g1(double mag2, double tgp, double esr)
 {
   return tgp*tgp * pow(g(mag2, esr) + esr * (esr+R_src), 2)
          - R_src*R_src*g(mag2, esr);
