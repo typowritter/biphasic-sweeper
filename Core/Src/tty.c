@@ -122,7 +122,7 @@ void readstr(char *ptr, size_t buflen)
  *  Input echo on
  *  Backspace supported
  */
-void readu32(uint32_t *uint32)
+void readu32(uint32_t *u32)
 {
     char ch;
     uint32_t res = 0;
@@ -145,5 +145,5 @@ void readu32(uint32_t *uint32)
             valid_cnt--;
         }
     }
-    *uint32 = res;
+    *u32 = res;
 }

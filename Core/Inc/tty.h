@@ -63,7 +63,7 @@ GETCHAR_PROTOTYPE;
 
 void putstr(char *ptr);
 void readstr(char *ptr, size_t buflen);
-void readu32(uint32_t *uint32);
+void readu32(uint32_t *u32);
 
 
 #ifdef  __cplusplus

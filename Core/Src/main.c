@@ -29,6 +29,7 @@
 /* USER CODE BEGIN Includes */
 #include "led.h"
 #include "tty.h"
+#include "tft.h"
 #include "delay.h"
 #include "ad9854.h"
 #include "ads124s0x.h"
@@ -101,6 +102,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   delay_init();
+  tft_init();
+  delay_ms(200);
   ad9854_init();
   ads124s_init();
 
@@ -115,6 +118,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    tft_cmd_poll();
     measure_task_poll();
 
     /* USER CODE END WHILE */

@@ -1,16 +1,13 @@
 #include "tft/cmd_process.h"
 
 uint8  cmd_buffer[CMD_MAX_SIZE];                                                     //指令缓存
-static uint16 current_screen_id = 0;                                                 //当前画面ID
-static int32 test_value = 0;                                                         //测试值
-static uint8 update_en = 0;                                                          //更新标记
 
 /*!
 *  \brief  消息处理流程
 *  \param msg 待处理消息
 *  \param size 消息长度
 */
-void ProcessMessage( PCTRL_MSG msg, uint16 size )
+__weak void ProcessMessage( PCTRL_MSG msg, uint16 size )
 {
     uint8 cmd_type = msg->cmd_type;                                                  //指令类型
     uint8 ctrl_msg = msg->ctrl_msg;                                                  //消息的类型
@@ -91,55 +88,9 @@ void ProcessMessage( PCTRL_MSG msg, uint16 size )
 *  \details  当前画面改变时(或调用GetScreen)，执行此函数
 *  \param screen_id 当前画面ID
 */
-void NotifyScreen(uint16 screen_id)
+__weak void NotifyScreen(uint16 screen_id)
 {
     //TODO: 添加用户代码
-    current_screen_id = screen_id;                                                   //在工程配置中开启画面切换通知，记录当前画面ID
-
-    //进到画面3亮起一个按钮
-    if(screen_id == 3)
-    {
-        SetButtonValue(3,1,1);
-    }
-    //进到画面自动播放GIF
-    if(current_screen_id == 9)
-    {
-        AnimationStart(9,1);                                                         //动画开始播放
-    }
-
-    //进到二维码页面生成二维码
-    if(current_screen_id==14)
-    {
-        //二维码控件显示中文字符时，需要转换为UTF8编码，
-        //通过“指令助手”，转换“www.gz-dc.com” ，得到字符串编码如下
-        uint8 dat[] = {0x77,0x77,0x77,0x2E,0x67,0x7A,0x2D,0x64,0x63,0x2E,0x63,0x6F,0x6D};
-        SetTextValue(14,1,dat);                                                      //发送二维码字符编码
-    }
-
-    //数据记录显示
-    if(current_screen_id == 15)
-    {
-        Record_SetEvent(15,1,0,0);
-        Record_SetEvent(15,1,1,0);
-        Record_SetEvent(15,1,2,0);
-        Record_SetEvent(15,1,3,0);
-        Record_SetEvent(15,1,4,0);
-        Record_SetEvent(15,1,5,0);
-        Record_SetEvent(15,1,6,0);
-        Record_SetEvent(15,1,7,0);
-        delay_ms(2000);                                                              //延时两秒
-        Record_ResetEvent(15,1,0,0);
-        Record_ResetEvent(15,1,1,0);
-        Record_ResetEvent(15,1,2,0);
-
-    }
-    //进入音乐画面自动播放
-    if(current_screen_id == 18)
-    {
-        uint8 buffer[19] = {0x94,0x61 ,0x3A ,0x2F ,0x73 ,0x6F ,0x75 ,0x6E ,0x64 ,0x73 ,0x2F , 0x30 ,0x31 ,0x2E ,0x6D ,0x70 ,0x33};
-        SetButtonValue(18,3,1);
-        PlayMusic(buffer);                                                           //播放音乐
-    }
 }
 
 /*!
@@ -148,7 +99,7 @@ void NotifyScreen(uint16 screen_id)
 *  \param x x坐标
 *  \param y y坐标
 */
-void NotifyTouchXY(uint8 press,uint16 x,uint16 y)
+__weak void NotifyTouchXY(uint8 press,uint16 x,uint16 y)
 {
     //TODO: 添加用户代码
 }
@@ -157,7 +108,7 @@ void NotifyTouchXY(uint8 press,uint16 x,uint16 y)
 /*!
 *  \brief  更新数据
 */
-void UpdateUI()
+__weak void UpdateUI()
 {
 
 }
@@ -170,7 +121,7 @@ void UpdateUI()
 *  \param control_id 控件ID
 *  \param state 按钮状态：0弹起，1按下
 */
-void NotifyButton(uint16 screen_id, uint16 control_id, uint8  state)
+__weak void NotifyButton(uint16 screen_id, uint16 control_id, uint8  state)
 {
 
 }
@@ -184,7 +135,7 @@ void NotifyButton(uint16 screen_id, uint16 control_id, uint8  state)
 *  \param control_id 控件ID
 *  \param str 文本控件内容
 */
-void NotifyText(uint16 screen_id, uint16 control_id, uint8 *str)
+__weak void NotifyText(uint16 screen_id, uint16 control_id, uint8 *str)
 {
 
 }
@@ -196,7 +147,7 @@ void NotifyText(uint16 screen_id, uint16 control_id, uint8 *str)
 *  \param control_id 控件ID
 *  \param value 值
 */
-void NotifyProgress(uint16 screen_id, uint16 control_id, uint32 value)
+__weak void NotifyProgress(uint16 screen_id, uint16 control_id, uint32 value)
 {
     //TODO: 添加用户代码
 }
@@ -208,7 +159,7 @@ void NotifyProgress(uint16 screen_id, uint16 control_id, uint32 value)
 *  \param control_id 控件ID
 *  \param value 值
 */
-void NotifySlider(uint16 screen_id, uint16 control_id, uint32 value)
+__weak void NotifySlider(uint16 screen_id, uint16 control_id, uint32 value)
 {
 
 }
@@ -220,7 +171,7 @@ void NotifySlider(uint16 screen_id, uint16 control_id, uint32 value)
 *  \param control_id 控件ID
 *  \param value 值
 */
-void NotifyMeter(uint16 screen_id, uint16 control_id, uint32 value)
+__weak void NotifyMeter(uint16 screen_id, uint16 control_id, uint32 value)
 {
     //TODO: 添加用户代码
 }
@@ -233,7 +184,7 @@ void NotifyMeter(uint16 screen_id, uint16 control_id, uint32 value)
 *  \param item 菜单项索引
 *  \param state 按钮状态：0松开，1按下
 */
-void NotifyMenu(uint16 screen_id, uint16 control_id, uint8 item, uint8 state)
+__weak void NotifyMenu(uint16 screen_id, uint16 control_id, uint8 item, uint8 state)
 {
     //TODO: 添加用户代码
 }
@@ -245,7 +196,7 @@ void NotifyMenu(uint16 screen_id, uint16 control_id, uint8 item, uint8 state)
 *  \param control_id 控件ID
 *  \param item 当前选项
 */
-void NotifySelector(uint16 screen_id, uint16 control_id, uint8  item)
+__weak void NotifySelector(uint16 screen_id, uint16 control_id, uint8  item)
 {
 
 }
@@ -255,7 +206,7 @@ void NotifySelector(uint16 screen_id, uint16 control_id, uint8  item)
 *  \param screen_id 画面ID
 *  \param control_id 控件ID
 */
-void NotifyTimer(uint16 screen_id, uint16 control_id)
+__weak void NotifyTimer(uint16 screen_id, uint16 control_id)
 {
 
 }
@@ -266,7 +217,7 @@ void NotifyTimer(uint16 screen_id, uint16 control_id)
 *  \param _data 返回数据
 *  \param length 数据长度
 */
-void NotifyReadFlash(uint8 status,uint8 *_data,uint16 length)
+__weak void NotifyReadFlash(uint8 status,uint8 *_data,uint16 length)
 {
     //TODO: 添加用户代码
 }
@@ -275,7 +226,7 @@ void NotifyReadFlash(uint8 status,uint8 *_data,uint16 length)
 *  \brief  写用户FLASH状态返回
 *  \param status 0失败，1成功
 */
-void NotifyWriteFlash(uint8 status)
+__weak void NotifyWriteFlash(uint8 status)
 {
     //TODO: 添加用户代码
 }
@@ -290,7 +241,7 @@ void NotifyWriteFlash(uint8 status)
 *  \param minute 分（BCD）
 *  \param second 秒（BCD）
 */
-void NotifyReadRTC(uint8 year,uint8 month,uint8 week,uint8 day,uint8 hour,uint8 minute,uint8 second)
+__weak void NotifyReadRTC(uint8 year,uint8 month,uint8 week,uint8 day,uint8 hour,uint8 minute,uint8 second)
 {
     uint8 years;
     uint8 months;

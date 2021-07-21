@@ -9,6 +9,7 @@
 --------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------*/
 #include "tft/hmi_driver.h"
+#include "stm32h7xx_hal.h"
 
 #define TX_8(P1) SEND_DATA((P1)&0xFF)                    //发送单个字节
 #define TX_8N(P,N) SendNU8((uint8 *)P,N)                 //发送N个字节
@@ -101,9 +102,7 @@ void END_CMD()
 */
 void DelayMS(unsigned int n)
 {
-    int i,j;
-    for(i = n;i>0;i--)
-        for(j=1000;j>0;j--) ;
+    HAL_Delay(n);
 }
 /*!
 *  \brief  串口发送送字符串
@@ -821,7 +820,7 @@ void ReadUserFlash(uint32 startAddress,uint16 length)
 /*!
 *  \brief      获取当前画面
 */
-void GetScreen(uint16 screen_id)
+void GetScreen()
 {
     BEGIN_CMD();
     TX_8(0xB1);

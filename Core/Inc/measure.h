@@ -27,8 +27,6 @@ typedef enum {
   TASK_AC_ESR,
 } measure_task_t;
 
-extern char g_type;
-extern double g_mag2, g_tgp;
 
 /* 回调函数：ADC转换完成 */
 void adc_conv_complete_cb();

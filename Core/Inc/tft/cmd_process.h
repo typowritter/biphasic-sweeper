@@ -66,6 +66,7 @@ typedef struct
 
 #pragma pack(pop)
 
+extern uint8 cmd_buffer[CMD_MAX_SIZE];
 
 /*!
 *  \brief  消息处理流程

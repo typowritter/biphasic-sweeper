@@ -42,6 +42,11 @@ Core/Src/ads124s0x.c \
 Core/Src/measure.c \
 Core/Src/led.c \
 Core/Src/tty.c \
+Core/Src/tft.c \
+Core/Src/tft/cmd_process.c \
+Core/Src/tft/cmd_queue.c \
+Core/Src/tft/hmi_driver.c \
+Core/Src/tft/hmi_user_uart.c \
 Core/Src/gpio.c \
 Core/Src/stm32h7xx_it.c \
 Core/Src/stm32h7xx_hal_msp.c \
@@ -128,6 +133,7 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
+-ICore/Inc/tft \
 -IDrivers/STM32H7xx_HAL_Driver/Inc \
 -IDrivers/STM32H7xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32H7xx/Include \
