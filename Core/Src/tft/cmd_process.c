@@ -1,6 +1,6 @@
 #include "tft/cmd_process.h"
 
-uint8  cmd_buffer[CMD_MAX_SIZE];                                                     //指令缓存
+uint8  g_cmd_buffer[CMD_MAX_SIZE];                                                     //指令缓存
 
 /*!
 *  \brief  消息处理流程
@@ -21,7 +21,7 @@ __weak void ProcessMessage( PCTRL_MSG msg, uint16 size )
     {
     case NOTIFY_TOUCH_PRESS:                                                        //触摸屏按下
     case NOTIFY_TOUCH_RELEASE:                                                      //触摸屏松开
-        NotifyTouchXY(cmd_buffer[1],PTR2U16(cmd_buffer+2),PTR2U16(cmd_buffer+4));
+        NotifyTouchXY(g_cmd_buffer[1],PTR2U16(g_cmd_buffer+2),PTR2U16(g_cmd_buffer+4));
         break;
     case NOTIFY_WRITE_FLASH_OK:                                                     //写FLASH成功
         NotifyWriteFlash(1);
@@ -30,13 +30,13 @@ __weak void ProcessMessage( PCTRL_MSG msg, uint16 size )
         NotifyWriteFlash(0);
         break;
     case NOTIFY_READ_FLASH_OK:                                                      //读取FLASH成功
-        NotifyReadFlash(1,cmd_buffer+2,size-6);                                     //去除帧头帧尾
+        NotifyReadFlash(1,g_cmd_buffer+2,size-6);                                     //去除帧头帧尾
         break;
     case NOTIFY_READ_FLASH_FAILD:                                                   //读取FLASH失败
         NotifyReadFlash(0,0,0);
         break;
     case NOTIFY_READ_RTC:                                                           //读取RTC时间
-        NotifyReadRTC(cmd_buffer[2],cmd_buffer[3],cmd_buffer[4],cmd_buffer[5],cmd_buffer[6],cmd_buffer[7],cmd_buffer[8]);
+        NotifyReadRTC(g_cmd_buffer[2],g_cmd_buffer[3],g_cmd_buffer[4],g_cmd_buffer[5],g_cmd_buffer[6],g_cmd_buffer[7],g_cmd_buffer[8]);
         break;
     case NOTIFY_CONTROL:
         {

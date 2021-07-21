@@ -8,10 +8,10 @@ void tft_init()
 
 void tft_cmd_poll()
 {
-  qsize size = queue_find_cmd(cmd_buffer, CMD_MAX_SIZE);
+  qsize_t size = queue_extract_cmd(g_cmd_buffer, CMD_MAX_SIZE);
 
   if (size > 0)
-    ProcessMessage((PCTRL_MSG)cmd_buffer, size);
+    ProcessMessage((PCTRL_MSG)g_cmd_buffer, size);
 }
 
 void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t state)
