@@ -110,7 +110,7 @@ __weak void NotifyTouchXY(uint8 press,uint16 x,uint16 y)
 */
 __weak void UpdateUI()
 {
-
+    //TODO: 添加用户代码
 }
 
 
@@ -123,7 +123,7 @@ __weak void UpdateUI()
 */
 __weak void NotifyButton(uint16 screen_id, uint16 control_id, uint8  state)
 {
-
+    //TODO: 添加用户代码
 }
 
 /*!
@@ -137,7 +137,7 @@ __weak void NotifyButton(uint16 screen_id, uint16 control_id, uint8  state)
 */
 __weak void NotifyText(uint16 screen_id, uint16 control_id, uint8 *str)
 {
-
+    //TODO: 添加用户代码
 }
 
 /*!
@@ -161,7 +161,7 @@ __weak void NotifyProgress(uint16 screen_id, uint16 control_id, uint32 value)
 */
 __weak void NotifySlider(uint16 screen_id, uint16 control_id, uint32 value)
 {
-
+    //TODO: 添加用户代码
 }
 
 /*!
@@ -198,7 +198,7 @@ __weak void NotifyMenu(uint16 screen_id, uint16 control_id, uint8 item, uint8 st
 */
 __weak void NotifySelector(uint16 screen_id, uint16 control_id, uint8  item)
 {
-
+    //TODO: 添加用户代码
 }
 
 /*!
@@ -208,7 +208,7 @@ __weak void NotifySelector(uint16 screen_id, uint16 control_id, uint8  item)
 */
 __weak void NotifyTimer(uint16 screen_id, uint16 control_id)
 {
-
+    //TODO: 添加用户代码
 }
 
 /*!
@@ -243,20 +243,5 @@ __weak void NotifyWriteFlash(uint8 status)
 */
 __weak void NotifyReadRTC(uint8 year,uint8 month,uint8 week,uint8 day,uint8 hour,uint8 minute,uint8 second)
 {
-    uint8 years;
-    uint8 months;
-    uint8 weeks;
-    uint8 days;
-    uint8 hours;
-    uint8 minutes;
-    uint8 sec;
-
-    sec =(0xff & (second>>4))*10 +(0xf & second);                                    //BCD码转十进制
-    years =(0xff & (year>>4))*10 +(0xf & year);
-    months =(0xff & (month>>4))*10 +(0xf & month);
-    weeks =(0xff & (week>>4))*10 +(0xf & week);
-    days =(0xff & (day>>4))*10 +(0xf & day);
-    hours =(0xff & (hour>>4))*10 +(0xf & hour);
-    minutes =(0xff & (minute>>4))*10 +(0xf & minute);
-
+    //TODO: 添加用户代码
 }
