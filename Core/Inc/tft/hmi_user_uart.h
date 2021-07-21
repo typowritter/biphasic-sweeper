@@ -1,9 +1,9 @@
 #ifndef _USER_UART__
 #define _USER_UART__
 
-#include "usart.h"     //根据用户MCU进行修改
+#include "tft/conf.h"
 
-#define tft_dev  huart5
+#include UART_HEADER     //根据用户MCU进行修改
 
 #define uchar    unsigned char
 #define uint8    unsigned char

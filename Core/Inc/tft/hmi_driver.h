@@ -9,13 +9,7 @@
 #ifndef _HMI_DRIVER_
 #define _HMI_DRIVER_
 
-#define FIRMWARE_VER 917   /*!< 保持此固件版本号与真实屏幕一致，确保新增功能可用*/
-#define CRC16_ENABLE 0         /*!< 如果需要CRC16校验功能，修改此宏为1(此时需要在VisualTFT工程中配CRC校验)*/
-#define CMD_MAX_SIZE 64        /*!<单条指令大小，根据需要调整，尽量设置大一些*/
-#define QUEUE_MAX_SIZE 128   /*!< 指令接收缓冲区大小，根据需要调整，尽量设置大一些*/
-
-#define SD_FILE_EN 0
-
+#include "tft/conf.h"
 #include "tft/hmi_user_uart.h"
 
 /*!
