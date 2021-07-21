@@ -25,7 +25,6 @@
 /* USER CODE BEGIN Includes */
 #include "measure.h"
 #include "tft.h"
-#include "tty.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -254,14 +253,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
 }
 
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if (huart->Instance == UART5)
   {
-    uint8_t data;
-    HAL_UART_Receive(huart, &data, 1, 1000);
-    queue_push(data);
-    tty_print("%X ", data);
+    tft_cmd_recv_cb();
   }
 }
 /* USER CODE END 1 */
