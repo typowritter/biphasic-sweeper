@@ -101,6 +101,7 @@ ads124s_conv_result_t ads124s_read_conv_data()
     res.data   = rx_buffer[4];
     res.data  |= rx_buffer[3] << 8;
     res.data  |= rx_buffer[2] << 16;
+    res.data  |= rx_buffer[2] & (1<<7) ? (0xff << 24):0;  /* sign extend */
   }
   else
   {
@@ -108,6 +109,7 @@ ads124s_conv_result_t ads124s_read_conv_data()
     res.data   = rx_buffer[3];
     res.data  |= rx_buffer[2] << 8;
     res.data  |= rx_buffer[1] << 16;
+    res.data  |= rx_buffer[1] & (1<<7) ? (0xff << 24):0;
   }
 
   ads124s_unselect();

@@ -54,9 +54,9 @@ typedef struct
 } ads124s_register_bit;
 
 typedef struct {
-  uint32_t data;
-  uint8_t  status;
-  uint8_t  crc;
+  int32_t data;
+  uint8_t status;
+  uint8_t crc;
 } ads124s_conv_result_t;
 
 typedef struct
