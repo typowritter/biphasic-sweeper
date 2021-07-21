@@ -108,6 +108,8 @@ void measure_task_done()
   g_task = TASK_IDLE;
 }
 
+/* ------------- 静态函数定义 ------------------ */
+
 static void adc_channel_setup()
 {
   gpio_set_low(ads124s_pin_sync);

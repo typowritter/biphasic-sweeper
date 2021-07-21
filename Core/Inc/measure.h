@@ -27,13 +27,29 @@ typedef enum {
   TASK_AC_ESR,
 } measure_task_t;
 
-
-/* 回调函数：ADC转换完成 */
+/**
+ * 外部中断回调函数，ADC转换完成
+ */
 void adc_conv_complete_cb();
 
+/**
+ * 准备好ADC和任务状态
+ */
 void measure_init();
+
+/**
+ * 开始一个测量任务，不需要考虑当前任务是否完成
+ */
 void measure_task_start(measure_task_t task);
+
+/**
+ * 主循环中调用，检测并执行测量任务
+ */
 void measure_task_poll();
+
+/**
+ * 结束当前测量任务
+ */
 void measure_task_done();
 
 #pragma GCC diagnostic pop
