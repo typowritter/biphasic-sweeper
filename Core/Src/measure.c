@@ -53,6 +53,8 @@ static void TASK network_sweep();
 /* 全局变量 */
 static measure_task_t g_task;
 
+static bool g_reset;
+
 static __IO struct
 {
   enum {N,S,I,Q} channel;
@@ -86,24 +88,24 @@ void measure_init()
 
 void measure_task_start(measure_task_t task)
 {
-  if (g_task != task)
+  g_reset = true;
+  g_task = task;
+
+  switch (g_task)
   {
-    g_task = task;
-    switch (g_task)
-    {
-      case TASK_SINGLE:
-        g_adc.channel = S;
-        gpio_set_high(dcr_switch_pin);
-        break;
-      case TASK_AC_ESR:
-        g_adc.channel = I;
-        gpio_set_low(dcr_switch_pin);
-        break;
-      default: break;
-    }
-    dds_setup();
-    adc_channel_setup();
+    case TASK_SINGLE:
+      g_adc.channel = S;
+      gpio_set_high(dcr_switch_pin);
+      break;
+    case TASK_AC_ESR:
+    case TASK_SWEEP:
+      g_adc.channel = I;
+      gpio_set_low(dcr_switch_pin);
+      break;
+    default: break;
   }
+  dds_setup();
+  adc_channel_setup();
 }
 
 void measure_task_poll()
@@ -179,6 +181,14 @@ static void TASK dcr_measure()
 {
   static double sum = 0;
   static int samples = 0;
+
+  if (g_reset)
+  {
+    g_reset = false;
+    sum = 0;
+    samples = 0;
+  }
+
   if (samples < 10)
   {
     tty_print(
@@ -205,6 +215,13 @@ static void TASK ac_esr_measure()
   static double sum = 0;
   static int samples = 0;
   static double vol_i, vol_q;
+
+  if (g_reset)
+  {
+    g_reset = false;
+    sum = 0;
+    samples = 0;
+  }
 
   if (samples < 10)
   {
@@ -240,6 +257,14 @@ static void TASK network_sweep()
   static uint64_t freq = AC_START_FREQ;
   static uint64_t delta_freq = DELTA_FREQ_MIN;
   static double vol_i, vol_q;
+
+  if (g_reset)
+  {
+    g_reset = false;
+    ix = 0;
+    freq = AC_START_FREQ;
+    delta_freq = DELTA_FREQ_MIN;
+  }
 
   if (g_adc.channel == I)
   {
