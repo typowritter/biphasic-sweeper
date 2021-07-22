@@ -5,20 +5,13 @@
 
 #include UART_HEADER     //根据用户MCU进行修改
 
-#define uchar    unsigned char
-#define uint8    unsigned char
-#define uint16   unsigned short int
-#define uint32   unsigned long
-#define int16    short int
-#define int32    long
-
 /****************************************************************************
 * 名    称： UartInit()
 * 功    能： 串口初始化
 * 入口参数： 无
 * 出口参数： 无
 ****************************************************************************/
-void UartInit(uint32 Baudrate);
+void UartInit(uint32_t Baudrate);
 
 /*****************************************************************
 * 名    称： SendChar()
@@ -26,7 +19,7 @@ void UartInit(uint32 Baudrate);
 * 入口参数： t  发送的字节
 * 出口参数： 无
  *****************************************************************/
-void  SendChar(uchar t);
+void  SendChar(uint8_t t);
 
 
 #endif

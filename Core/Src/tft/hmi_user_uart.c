@@ -29,7 +29,7 @@
 ****************************************************************************/
 
 
-void UartInit(uint32 BaudRate)
+void UartInit(uint32_t BaudRate)
 {
     /* 串口初始化部分已在CubeMX工程中完成 */
     return;
@@ -42,7 +42,7 @@ void UartInit(uint32 BaudRate)
 * 入口参数： t  发送的字节
 * 出口参数： 无
  *****************************************************************/
-void  SendChar(uchar t)
+void  SendChar(uint8_t t)
 {
     HAL_UART_Transmit(&tft_dev, (uint8_t *)&t, 1, 0xFFFF);
 }

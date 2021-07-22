@@ -1,20 +1,20 @@
 #include "tft/cmd_process.h"
 
-uint8  g_cmd_buffer[CMD_MAX_SIZE];                                                     //指令缓存
+uint8_t  g_cmd_buffer[CMD_MAX_SIZE];                                                //指令缓存
 
 /*!
 *  \brief  消息处理流程
 *  \param msg 待处理消息
 *  \param size 消息长度
 */
-__weak void ProcessMessage( PCTRL_MSG msg, uint16 size )
+__weak void ProcessMessage(PCTRL_MSG msg, uint16_t size)
 {
-    uint8 cmd_type = msg->cmd_type;                                                  //指令类型
-    uint8 ctrl_msg = msg->ctrl_msg;                                                  //消息的类型
-    uint8 control_type = msg->control_type;                                          //控件类型
-    uint16 screen_id = PTR2U16(&msg->screen_id);                                     //画面ID
-    uint16 control_id = PTR2U16(&msg->control_id);                                   //控件ID
-    uint32 value = PTR2U32(msg->param);                                              //数值
+    uint8_t cmd_type = msg->cmd_type;                                               //指令类型
+    uint8_t ctrl_msg = msg->ctrl_msg;                                               //消息的类型
+    uint8_t control_type = msg->control_type;                                       //控件类型
+    uint16_t screen_id = PTR2U16(&msg->screen_id);                                  //画面ID
+    uint16_t control_id = PTR2U16(&msg->control_id);                                //控件ID
+    uint32_t value = PTR2U32(msg->param);                                           //数值
 
 
     switch(cmd_type)
@@ -30,7 +30,7 @@ __weak void ProcessMessage( PCTRL_MSG msg, uint16 size )
         NotifyWriteFlash(0);
         break;
     case NOTIFY_READ_FLASH_OK:                                                      //读取FLASH成功
-        NotifyReadFlash(1,g_cmd_buffer+2,size-6);                                     //去除帧头帧尾
+        NotifyReadFlash(1,g_cmd_buffer+2,size-6);                                   //去除帧头帧尾
         break;
     case NOTIFY_READ_FLASH_FAILD:                                                   //读取FLASH失败
         NotifyReadFlash(0,0,0);
@@ -88,7 +88,7 @@ __weak void ProcessMessage( PCTRL_MSG msg, uint16 size )
 *  \details  当前画面改变时(或调用GetScreen)，执行此函数
 *  \param screen_id 当前画面ID
 */
-__weak void NotifyScreen(uint16 screen_id)
+__weak void NotifyScreen(uint16_t screen_id)
 {
     //TODO: 添加用户代码
 }
@@ -99,7 +99,7 @@ __weak void NotifyScreen(uint16 screen_id)
 *  \param x x坐标
 *  \param y y坐标
 */
-__weak void NotifyTouchXY(uint8 press,uint16 x,uint16 y)
+__weak void NotifyTouchXY(uint8_t press, uint16_t x, uint16_t y)
 {
     //TODO: 添加用户代码
 }
@@ -121,7 +121,7 @@ __weak void UpdateUI()
 *  \param control_id 控件ID
 *  \param state 按钮状态：0弹起，1按下
 */
-__weak void NotifyButton(uint16 screen_id, uint16 control_id, uint8  state)
+__weak void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t state)
 {
     //TODO: 添加用户代码
 }
@@ -135,7 +135,7 @@ __weak void NotifyButton(uint16 screen_id, uint16 control_id, uint8  state)
 *  \param control_id 控件ID
 *  \param str 文本控件内容
 */
-__weak void NotifyText(uint16 screen_id, uint16 control_id, uint8 *str)
+__weak void NotifyText(uint16_t screen_id, uint16_t control_id, uint8_t *str)
 {
     //TODO: 添加用户代码
 }
@@ -147,7 +147,7 @@ __weak void NotifyText(uint16 screen_id, uint16 control_id, uint8 *str)
 *  \param control_id 控件ID
 *  \param value 值
 */
-__weak void NotifyProgress(uint16 screen_id, uint16 control_id, uint32 value)
+__weak void NotifyProgress(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
     //TODO: 添加用户代码
 }
@@ -159,7 +159,7 @@ __weak void NotifyProgress(uint16 screen_id, uint16 control_id, uint32 value)
 *  \param control_id 控件ID
 *  \param value 值
 */
-__weak void NotifySlider(uint16 screen_id, uint16 control_id, uint32 value)
+__weak void NotifySlider(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
     //TODO: 添加用户代码
 }
@@ -171,7 +171,7 @@ __weak void NotifySlider(uint16 screen_id, uint16 control_id, uint32 value)
 *  \param control_id 控件ID
 *  \param value 值
 */
-__weak void NotifyMeter(uint16 screen_id, uint16 control_id, uint32 value)
+__weak void NotifyMeter(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
     //TODO: 添加用户代码
 }
@@ -184,7 +184,7 @@ __weak void NotifyMeter(uint16 screen_id, uint16 control_id, uint32 value)
 *  \param item 菜单项索引
 *  \param state 按钮状态：0松开，1按下
 */
-__weak void NotifyMenu(uint16 screen_id, uint16 control_id, uint8 item, uint8 state)
+__weak void NotifyMenu(uint16_t screen_id, uint16_t control_id, uint8_t item, uint8_t state)
 {
     //TODO: 添加用户代码
 }
@@ -196,7 +196,7 @@ __weak void NotifyMenu(uint16 screen_id, uint16 control_id, uint8 item, uint8 st
 *  \param control_id 控件ID
 *  \param item 当前选项
 */
-__weak void NotifySelector(uint16 screen_id, uint16 control_id, uint8  item)
+__weak void NotifySelector(uint16_t screen_id, uint16_t control_id, uint8_t item)
 {
     //TODO: 添加用户代码
 }
@@ -206,7 +206,7 @@ __weak void NotifySelector(uint16 screen_id, uint16 control_id, uint8  item)
 *  \param screen_id 画面ID
 *  \param control_id 控件ID
 */
-__weak void NotifyTimer(uint16 screen_id, uint16 control_id)
+__weak void NotifyTimer(uint16_t screen_id, uint16_t control_id)
 {
     //TODO: 添加用户代码
 }
@@ -217,7 +217,7 @@ __weak void NotifyTimer(uint16 screen_id, uint16 control_id)
 *  \param _data 返回数据
 *  \param length 数据长度
 */
-__weak void NotifyReadFlash(uint8 status,uint8 *_data,uint16 length)
+__weak void NotifyReadFlash(uint8_t status, uint8_t *_data, uint16_t length)
 {
     //TODO: 添加用户代码
 }
@@ -226,7 +226,7 @@ __weak void NotifyReadFlash(uint8 status,uint8 *_data,uint16 length)
 *  \brief  写用户FLASH状态返回
 *  \param status 0失败，1成功
 */
-__weak void NotifyWriteFlash(uint8 status)
+__weak void NotifyWriteFlash(uint8_t status)
 {
     //TODO: 添加用户代码
 }
@@ -241,7 +241,8 @@ __weak void NotifyWriteFlash(uint8 status)
 *  \param minute 分（BCD）
 *  \param second 秒（BCD）
 */
-__weak void NotifyReadRTC(uint8 year,uint8 month,uint8 week,uint8 day,uint8 hour,uint8 minute,uint8 second)
+__weak void NotifyReadRTC(uint8_t year, uint8_t month, uint8_t week, uint8_t day,
+    uint8_t hour, uint8_t minute, uint8_t second)
 {
     //TODO: 添加用户代码
 }
