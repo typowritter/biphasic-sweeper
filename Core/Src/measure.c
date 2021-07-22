@@ -32,7 +32,7 @@ static void TASK ac_esr_measure();
 
 static measure_task_t g_task;
 
-static struct
+static __IO struct
 {
   enum {N,S,I,Q} channel;
   bool new_data;

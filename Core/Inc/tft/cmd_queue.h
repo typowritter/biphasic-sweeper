@@ -19,6 +19,11 @@ extern "C" {
 typedef uint8_t  qdata_t;
 typedef uint16_t qsize_t;
 
+typedef enum {
+  CMD_EOC,    /* End Of Command */
+  CMD_NOTEOC,
+} cmd_eoc_t;
+
 /**
  * 清空指令数据
  */
@@ -26,8 +31,10 @@ void queue_reset(void);
 
 /**
  * UART接收的数据，通过此函数放入指令队列
+ *
+ * @return -- CMD_EOC 代表当前数据是指令帧尾
  */
-void queue_push(qdata_t data);
+cmd_eoc_t queue_push(qdata_t data);
 
 /**
  * 从指令队列中取出一条完整的指令

@@ -25,6 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include "measure.h"
 #include "tft.h"
+#include "tft/conf.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -255,9 +256,17 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  if (huart->Instance == UART5)
+  if (huart == &tft_dev)
   {
-    tft_cmd_recv_cb();
+    tft_cmd_recv_cb(RECV_NORMAL);
+  }
+}
+
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+  if (huart == &tft_dev)
+  {
+    tft_cmd_recv_cb(RECV_TIMEOUT);
   }
 }
 /* USER CODE END 1 */

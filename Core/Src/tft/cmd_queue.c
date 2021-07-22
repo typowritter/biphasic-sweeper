@@ -37,8 +37,10 @@ void queue_reset()
 
 /**
  * UART接收的数据，通过此函数放入指令队列
+ *
+ * @return -- CMD_EOC 代表当前数据是指令帧尾
  */
-void queue_push(qdata_t data)
+cmd_eoc_t queue_push(qdata_t data)
 {
   static uint32_t cmd_state = 0;
   qsize_t pos = (g_queue.head + 1) % QUEUE_MAX_SIZE;
@@ -54,7 +56,9 @@ void queue_push(qdata_t data)
   {
     cmd_state = 0;
     g_cmd_count++;
+    return CMD_EOC;
   }
+  return CMD_NOTEOC;
 }
 
 /**

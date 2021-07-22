@@ -14,6 +14,12 @@
 extern "C" {
 #endif
 
+typedef enum {
+  RECV_IDLE,
+  RECV_NORMAL,
+  RECV_TIMEOUT
+} recv_status_t;
+
 /**
  * 准备好与TFT的通信
  */
@@ -25,9 +31,12 @@ void tft_init();
 void tft_cmd_poll();
 
 /**
- * UART接收回调函数，将数据放入接收队列
+ * UART接收回调函数
+ *
+ * @param status  -- RECV_NORMAL:  正常接收
+ *                -- RECV_TIMEOUT: 超时接收
  */
-void tft_cmd_recv_cb();
+void tft_cmd_recv_cb(recv_status_t status);
 
 #ifdef  __cplusplus
 }
