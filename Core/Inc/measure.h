@@ -14,10 +14,10 @@ extern "C" {
 
 #define DCR_CHAN_P      ads124s_chan_ain4   /* DCR测量输入端 */
 #define DCR_CHAN_N      ads124s_chan_ain0   /* DCR测量接地端 */
-#define IDAC_CHAN_P     ads124s_chan_ain1   /* IDAC差分输入端 */
-#define IDAC_CHAN_N     ads124s_chan_ain2   /* IDAC差分输入端 */
-#define QDAC_CHAN_P     ads124s_chan_ain11  /* QDAC差分输入端 */
-#define QDAC_CHAN_N     ads124s_chan_ain10  /* QDAC差分输入端 */
+#define IDAC_CHAN_P     ads124s_chan_ain11  /* IDAC差分输入端 */
+#define IDAC_CHAN_N     ads124s_chan_ain10  /* IDAC差分输入端 */
+#define QDAC_CHAN_P     ads124s_chan_ain1   /* QDAC差分输入端 */
+#define QDAC_CHAN_N     ads124s_chan_ain2   /* QDAC差分输入端 */
 
 DEF_GPIO(dcr_switch_pin, DCR_SWITCH_GPIO_Port, DCR_SWITCH_Pin);
 

@@ -4,6 +4,7 @@
 #include "tft/cmd_queue.h"
 #include "tft/hmi_driver.h"
 #include "tty.h"
+#include "measure.h"
 
 #define RECV_BUFSIZE    CMD_MAX_SIZE
 
@@ -74,7 +75,10 @@ void tft_cmd_recv_cb(recv_status_t status)
  */
 void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t state)
 {
-  tty_print("%d, %d, %d\r\n", screen_id, control_id, state);
+  if (control_id == 1)
+    measure_task_start(TASK_AC_ESR);
+  else if (control_id == 6)
+    measure_task_start(TASK_SWEEP);
 }
 
 /* ------------------ 静态函数定义 ------------------ */

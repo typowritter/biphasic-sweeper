@@ -6,7 +6,7 @@
 /* 各种环境常量 */
 #define V_SRC         3.0119  /* 源电压 */
 #define R_SRC         626.0   /* 直流源电阻 */
-#define R_src         100.0   /* 交流源电阻 */
+#define R_src         510.0   /* 交流源电阻 */
 #define V_REF         3.0069  /* ADC参考电压 */
 #define V_DRV         1.86    /* 驱动器正弦信号峰值 */
 #define COMP_SETUP    20      /* 迟滞比较器稳定输出延时（ms） */
@@ -19,7 +19,7 @@
 
 /* 校准参数定义 */
 #define k        0.7973      /* 开路IQ两路幅频偏移 */
-#define PHI0    (-132.1333)  /* 开路IQ两路相频偏移 */
+#define PHI0    (-2.31)  /* 开路IQ两路相频偏移 */
 #define TRANSFORM(x) (1000/(4.8212859/x - 1.6032056))
 
 /* 测量参数定义 */
@@ -245,6 +245,7 @@ static void TASK ac_esr_measure()
       samples = 0;
       sum = 0;
 
+      tty_print("I: %.4f, Q: %.4f\r\n", vol_i, vol_q);
       calculate_esr_z(vol_i, vol_q);
       measure_task_done();
     }
@@ -254,8 +255,8 @@ static void TASK ac_esr_measure()
 static void TASK network_sweep()
 {
   static int ix = 0;
-  static uint64_t freq = AC_START_FREQ;
-  static uint64_t delta_freq = DELTA_FREQ_MIN;
+  static uint32_t freq = AC_START_FREQ;
+  static uint32_t delta_freq = DELTA_FREQ_MIN;
   static double vol_i, vol_q;
 
   if (g_reset)
@@ -277,7 +278,7 @@ static void TASK network_sweep()
   {
     vol_q = g_adc.data;
     double mag   = k*sqrt(vol_i*vol_i + vol_q*vol_q);
-    double phase = atan(vol_q/vol_i) - PHI0;
+    double phase = atan2(vol_q, vol_i) - PHI0;
 
     if (ix > 0 && fabs(phase - g_sweep_data[ix-1].phase) > DELTA_PHASE_THRES)
     {
@@ -295,9 +296,10 @@ static void TASK network_sweep()
     }
 
     freq += delta_freq;
-    g_sweep_data[ix++].mag = mag;
-    g_sweep_data[ix++].phase = phase;
-    tty_print("index: %d, freq: %d, delta: %d, mag: %.4f, phase: %.4f\r\n",
+    g_sweep_data[ix].mag = mag;
+    g_sweep_data[ix].phase = phase;
+    ix++;
+    tty_print("index: %d, freq: %ld, delta: %d, mag: %.4f, phase: %.4f\r\n",
       ix, freq, delta_freq, mag, phase);
 
     while (freq_visited(freq, ix))
@@ -331,7 +333,7 @@ static bool freq_visited(uint64_t freq, int upper_ix)
 static void calculate_esr_z(double vol_i, double vol_q)
 {
   double Vo = k*sqrt(vol_i*vol_i + vol_q*vol_q);
-  double theta = atan(vol_q/vol_i) - PHI0;
+  double theta = atan2(vol_q, vol_i) - PHI0;
   double Vo_real = Vo*cos(theta);
   double Vo_imag = Vo*sin(theta);
   double denom = (Vo_imag*Vo_imag + pow(V_DRV-Vo_real, 2));
