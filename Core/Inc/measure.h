@@ -25,6 +25,7 @@ typedef enum {
   TASK_IDLE,
   TASK_SINGLE,
   TASK_AC_ESR,
+  TASK_SWEEP,
 } measure_task_t;
 
 /**

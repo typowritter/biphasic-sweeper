@@ -3,7 +3,6 @@
 #include "tty.h"
 #include "delay.h"
 
-
 /* 各种环境常量 */
 #define V_SRC         3.0119  /* 源电压 */
 #define R_SRC         626.0   /* 直流源电阻 */
@@ -24,17 +23,34 @@
 #define TRANSFORM(x) (1000/(4.8212859/x - 1.6032056))
 
 /* 测量参数定义 */
-#define AC_START_FREQ 10000
+#define AC_START_FREQ     1000
+#define AC_STOP_FREQ      100000
+#define DELTA_FREQ_MIN    200
+#define DELTA_FREQ_MAX    6400
+#define DELTA_PHASE_THRES 0.16
+#define SWEEP_MAX_NUM     100
 
-#define TASK
+typedef struct
+{
+  uint64_t freq;
+  double mag;
+  double phase;
+} sweep_data_t;
+
 static void adc_channel_setup();
 static void dds_setup();
+static bool freq_visited(uint64_t freq, int upper_ix);
 static void calculate_esr_z(double vol_i, double vol_q);
+
+#define TASK
 /* 直流特性 */
 static void TASK dcr_measure();
 /* 1kHz相量法测电容电感 */
 static void TASK ac_esr_measure();
+/* 慢开始扫频 */
+static void TASK network_sweep();
 
+/* 全局变量 */
 static measure_task_t g_task;
 
 static __IO struct
@@ -44,6 +60,9 @@ static __IO struct
   uint8_t status;
   double data;
 } g_adc;
+
+static sweep_data_t g_sweep_data[SWEEP_MAX_NUM];
+
 
 /* 回调函数：ADC转换完成 */
 void adc_conv_complete_cb()
@@ -96,6 +115,7 @@ void measure_task_poll()
     {
       case TASK_SINGLE: dcr_measure(); break;
       case TASK_AC_ESR: ac_esr_measure(); break;
+      case TASK_SWEEP:  network_sweep(); break;
       default: break;
     }
 
@@ -212,6 +232,75 @@ static void TASK ac_esr_measure()
       measure_task_done();
     }
   }
+}
+
+static void TASK network_sweep()
+{
+  static int ix = 0;
+  static uint64_t freq = AC_START_FREQ;
+  static uint64_t delta_freq = DELTA_FREQ_MIN;
+  static double vol_i, vol_q;
+
+  if (g_adc.channel == I)
+  {
+    vol_i = g_adc.data;
+    g_adc.channel = Q;
+    adc_channel_setup();
+    return;
+  }
+  else
+  {
+    vol_q = g_adc.data;
+    double mag   = k*sqrt(vol_i*vol_i + vol_q*vol_q);
+    double phase = atan(vol_q/vol_i) - PHI0;
+
+    if (ix > 0 && fabs(phase - g_sweep_data[ix-1].phase) > DELTA_PHASE_THRES)
+    {
+      if (delta_freq > DELTA_FREQ_MIN)
+      {
+        freq -= delta_freq;
+        delta_freq = DELTA_FREQ_MIN;
+      }
+    }
+    else
+    {
+      delta_freq *= 2;
+      if (delta_freq > DELTA_FREQ_MAX)
+        delta_freq = DELTA_FREQ_MAX;
+    }
+
+    freq += delta_freq;
+    g_sweep_data[ix++].mag = mag;
+    g_sweep_data[ix++].phase = phase;
+    tty_print("index: %d, freq: %d, delta: %d, mag: %.4f, phase: %.4f\r\n",
+      ix, freq, delta_freq, mag, phase);
+
+    while (freq_visited(freq, ix))
+    {
+      tty_print("skipped %d\r\n", freq);
+      freq += delta_freq;
+    }
+
+    if (ix >= 100 || freq > AC_STOP_FREQ)
+    {
+      measure_task_done();
+      return;
+    }
+
+    freq_conv_with_delay(freq);
+    g_adc.channel = I;
+    adc_channel_setup();
+  }
+}
+
+static bool freq_visited(uint64_t freq, int upper_ix)
+{
+  for (int i = 0; i < upper_ix; ++i)
+  {
+    if (freq == g_sweep_data[i].freq)
+      return true;
+  }
+  return false;
 }
 
 static void calculate_esr_z(double vol_i, double vol_q)
