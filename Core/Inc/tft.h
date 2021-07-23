@@ -14,6 +14,24 @@
 extern "C" {
 #endif
 
+/* 控件ID定义 */
+
+enum {
+  scr_main      = 0,
+  btn_auto      = 1,
+  btn_r         = 2,
+  btn_l         = 3,
+  btn_c         = 4,
+  btn_distance  = 5,
+  btn_datarate  = 6,
+  btn_network   = 7,
+  sld_datarate  = 11,
+  txt_result    = 20,
+  txt_datarate  = 21,
+  gif_network   = 30,
+  ico_status    = 40,
+};
+
 typedef enum {
   RECV_IDLE,
   RECV_NORMAL,
