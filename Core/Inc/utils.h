@@ -46,15 +46,6 @@ extern "C" {
 
 #define DEBUG_GEN(fn, prefix, ...) fn(prefix __VA_ARGS__)
 
-/* bool */
-typedef uint8_t bool;
-#ifndef false
-#define false 0
-#endif
-#ifndef true
-#define true (!false)
-#endif
-
 #ifdef  __cplusplus
 }
 #endif
