@@ -244,6 +244,7 @@ typedef enum {
   ads124s_datarate_x1000  = 0x0b,
   ads124s_datarate_x2000  = 0x0c,
   ads124s_datarate_x4000  = 0x0d,
+  ads124s_datarate_num,
 } ads124s_datarate_t;
 
 typedef enum {

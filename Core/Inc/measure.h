@@ -53,6 +53,8 @@ void measure_task_poll();
  */
 void measure_task_done();
 
+void datarate_set(ads124s_datarate_t dr);
+
 #pragma GCC diagnostic pop
 #ifdef  __cplusplus
 }

@@ -35,7 +35,7 @@ enum {
 typedef enum {
   RECV_IDLE,
   RECV_NORMAL,
-  RECV_TIMEOUT
+  RECV_TIMEOUT,
 } recv_status_t;
 
 /**

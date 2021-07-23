@@ -13,7 +13,16 @@ static void uart_rx_timeout_enable();
 /* 双缓冲 */
 static uint8_t cmd_recvbufs[2][RECV_BUFSIZE];
 static __IO uint8_t curr_buf;
+
+/* 指示命令接收是否超时 */
 static __IO recv_status_t g_status;
+
+/* 采样率字面量查找表 */
+static const char datarate_lut[ads124s_datarate_num][5] =
+{
+  "2.5", "5",   "10",  "16.6", "20",   "50",   "60",
+  "100", "200", "400", "800",  "1000", "2000", "4000",
+};
 
 /**
  * 准备好与TFT的通信
@@ -75,12 +84,28 @@ void tft_cmd_recv_cb(recv_status_t status)
  */
 void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t state)
 {
-  if (control_id == 1)
-    measure_task_start(TASK_AC_ESR);
-  else if (control_id == 6)
-    measure_task_start(TASK_SWEEP);
+  switch (control_id)
+  {
+    case btn_auto:
+    case btn_r:
+    case btn_l:
+    case btn_c: measure_task_start(TASK_AC_ESR); break;
+    case btn_distance:
+    case btn_datarate: measure_task_done(); break;
+    case btn_network: measure_task_start(TASK_SWEEP); break;
+    default: break;
+  }
 }
 
+void NotifySlider(uint16_t screen_id, uint16_t control_id, uint32_t value)
+{
+  char strbuf[30];
+
+  sprintf(strbuf, "Datarate: %s", datarate_lut[value]);
+  SetTextValue(scr_main, txt_datarate, (uint8_t*)strbuf);
+
+  datarate_set(value);
+}
 /* ------------------ 静态函数定义 ------------------ */
 
 static void uart_rx_timeout_enable()

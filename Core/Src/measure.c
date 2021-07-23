@@ -56,6 +56,9 @@ static measure_task_t g_task;
 
 static bool g_reset;
 
+static ads124s_datarate_t
+g_datarate = ads124s_datarate_x100;
+
 static __IO struct
 {
   enum {N,S,I,Q} channel;
@@ -136,11 +139,17 @@ void measure_task_done()
   g_task = TASK_IDLE;
 }
 
+void datarate_set(ads124s_datarate_t dr)
+{
+  g_datarate = dr;
+}
+
 /* ------------- 静态函数定义 ------------------ */
 
 static void adc_channel_setup()
 {
   gpio_set_low(ads124s_pin_sync);
+  ads124s_update_value(ads124s_datarate, g_datarate);
 
   switch (g_adc.channel)
   {
