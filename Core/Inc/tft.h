@@ -56,6 +56,16 @@ void tft_cmd_poll();
  */
 void tft_cmd_recv_cb(recv_status_t status);
 
+/**
+ * 设置文本框显示内容，支持格式化字符串
+ *
+ * @param screen_id     -- 文本框所在画面ID
+ * @param control_id    -- 文本框控件ID
+ * @param fmt           -- 格式化字符串
+ * @param [variadic]    -- 可变参数，待格式化值
+ */
+void tft_text_print(uint16_t screen_id, uint16_t control_id, char *fmt, ...);
+
 #ifdef  __cplusplus
 }
 #endif

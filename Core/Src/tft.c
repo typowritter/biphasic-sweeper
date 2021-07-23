@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include "tft.h"
 #include "tft/conf.h"
 #include "tft/cmd_process.h"
@@ -7,6 +8,7 @@
 #include "measure.h"
 
 #define RECV_BUFSIZE    CMD_MAX_SIZE
+#define TEXT_BUFSIZE    30
 
 static void uart_rx_timeout_enable();
 
@@ -14,11 +16,13 @@ static void uart_rx_timeout_enable();
 static uint8_t cmd_recvbufs[2][RECV_BUFSIZE];
 static __IO uint8_t curr_buf;
 
+static char g_text_strbuf[TEXT_BUFSIZE];
+
 /* 指示命令接收是否超时 */
 static __IO recv_status_t g_status;
 
 /* 采样率字面量查找表 */
-static const char datarate_lut[ads124s_datarate_num][5] =
+static const uint8_t datarate_lut[ads124s_datarate_num][5] =
 {
   "2.5", "5",   "10",  "16.6", "20",   "50",   "60",
   "100", "200", "400", "800",  "1000", "2000", "4000",
@@ -73,6 +77,24 @@ void tft_cmd_recv_cb(recv_status_t status)
   HAL_UART_Receive_IT(&tft_dev, cmd_recvbufs[curr_buf], RECV_BUFSIZE);
 }
 
+/**
+ * 设置文本框显示内容，支持格式化字符串
+ *
+ * @param screen_id     -- 文本框所在画面ID
+ * @param control_id    -- 文本框控件ID
+ * @param fmt           -- 格式化字符串
+ * @param [variadic]    -- 可变参数，待格式化值
+ */
+void tft_text_print(uint16_t screen_id, uint16_t control_id, char *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  vsprintf(g_text_strbuf, fmt, args);
+  va_end(args);
+
+  SetTextValue(screen_id, control_id, (uint8_t*)g_text_strbuf);
+}
+
 /* ------ 控件事件通知，覆盖 cmd_process 中的定义 ------ */
 
 /**
@@ -99,12 +121,10 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t state)
 
 void NotifySlider(uint16_t screen_id, uint16_t control_id, uint32_t value)
 {
-  char strbuf[30];
+  tft_text_print(scr_main, txt_datarate,
+    "Datarate: %s", datarate_lut[value]);
 
-  sprintf(strbuf, "Datarate: %s", datarate_lut[value]);
-  SetTextValue(scr_main, txt_datarate, (uint8_t*)strbuf);
-
-  datarate_set(value);
+  measure_datarate_set(value);
 }
 /* ------------------ 静态函数定义 ------------------ */
 

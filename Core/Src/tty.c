@@ -12,9 +12,43 @@
   *
   ******************************************************************************
   */
+#include <stdarg.h>
 #include "tty.h"
 
-char STRBUF[READSTR_MAX_BUFSIZE];
+#define STR_BUFSIZE     100
+
+static char g_strbuf[STR_BUFSIZE];
+
+/*
+ * tty_print
+ *  Format string and output to serial port
+ */
+int tty_print(char *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  int r = vsprintf(g_strbuf, fmt, args);
+  va_end(args);
+
+  putstr(g_strbuf);
+  return r;
+}
+
+/*
+ * tty_scan
+ *  Scanf from serial port
+ */
+int tty_scan(char *fmt, ...)
+{
+  readstr(g_strbuf, STR_BUFSIZE);
+
+  va_list args;
+  va_start(args, fmt);
+  int r = vsscanf(g_strbuf, fmt, args);
+  va_end(args);
+
+  return r;
+}
 
 PUTCHAR_PROTOTYPE
 {

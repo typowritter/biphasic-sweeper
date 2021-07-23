@@ -26,23 +26,17 @@ extern "C" {
 
 #define usart_dev               huart1
 
-#define READSTR_MAX_BUFSIZE     100
-#define STRBUF                  ewf32r9823g8398dbhq38
+/*
+ * tty_print
+ *  Format string and output to serial port
+ */
+int tty_print(char *fmt, ...);
 
-extern char STRBUF[READSTR_MAX_BUFSIZE];
-
-#define tty_print(...) \
-    do {\
-        sprintf(STRBUF, __VA_ARGS__); \
-        putstr(STRBUF);\
-    } while(0)
-
-#define tty_scan(...) \
-    do {\
-        readstr(STRBUF, READSTR_MAX_BUFSIZE);\
-        sscanf(STRBUF, __VA_ARGS__); \
-    } while(0)
-
+/*
+ * tty_scan
+ *  Scanf from serial port
+ */
+int tty_scan(char *fmt, ...);
 
 #ifdef __GNUC__
     #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
@@ -61,8 +55,28 @@ GETCHAR_PROTOTYPE;
 
 /* -------------------------------------------------------- */
 
+/*
+ * putstr
+ *  Output a '\0'-terminated string
+ */
 void putstr(char *ptr);
+
+/*
+ * readstr
+ *  Read a '\0'-terminated string with limited buffer size
+ *  CRLF not included
+ *  Input echo on
+ *  Backspace ignored
+ */
 void readstr(char *ptr, size_t buflen);
+
+/*
+ * readu32
+ *  Read a uint32 type integer, following a newline
+ *  Skips non-numeric inputs
+ *  Input echo on
+ *  Backspace supported
+ */
 void readu32(uint32_t *u32);
 
 
