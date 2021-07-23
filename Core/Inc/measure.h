@@ -24,7 +24,8 @@ DEF_GPIO(dcr_switch_pin, DCR_SWITCH_GPIO_Port, DCR_SWITCH_Pin);
 typedef enum {
   TASK_IDLE,
   TASK_SINGLE,
-  TASK_AC_ESR,
+  TASK_AC_ESR_L,
+  TASK_AC_ESR_C,
   TASK_SWEEP,
 } measure_task_t;
 

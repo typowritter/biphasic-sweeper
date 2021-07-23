@@ -108,12 +108,12 @@ void NotifyButton(uint16_t screen_id, uint16_t control_id, uint8_t state)
 {
   switch (control_id)
   {
-    case btn_auto:
-    case btn_r:
-    case btn_l:
-    case btn_c: measure_task_start(TASK_AC_ESR); break;
-    case btn_distance:
-    case btn_datarate: measure_task_done(); break;
+    case btn_auto: break;
+    case btn_r: measure_task_start(TASK_SINGLE); break;
+    case btn_l: measure_task_start(TASK_AC_ESR_L); break;
+    case btn_c: measure_task_start(TASK_AC_ESR_C); break;
+    case btn_distance: break;
+    case btn_config: measure_config_update(); break;
     case btn_network: measure_task_start(TASK_SWEEP); break;
     default: break;
   }

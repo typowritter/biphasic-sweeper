@@ -4,7 +4,9 @@
 #include "tty.h"
 #include "delay.h"
 
-/* 各种环境常量 */
+/* -----------------------------------------
+ * 各种环境常量、参数定义
+ * ----------------------------------------- */
 #define V_SRC         3.0119  /* 源电压 */
 #define R_SRC         626.0   /* 直流源电阻 */
 #define R_src         510.0   /* 交流源电阻 */
@@ -24,12 +26,22 @@
 #define TRANSFORM(x) (1000/(4.8212859/x - 1.6032056))
 
 /* 测量参数定义 */
-#define AC_START_FREQ     1000
-#define AC_STOP_FREQ      100000
+#define AC_ESR_L_FREQ     100000
+#define AC_ESR_C_FREQ     1000
+#define SWEEP_START_FREQ  1000
+#define SWEEP_STOP_FREQ   100000
 #define DELTA_FREQ_MIN    200
 #define DELTA_FREQ_MAX    6400
 #define DELTA_PHASE_THRES 0.16
 #define SWEEP_MAX_NUM     100
+
+/* -----------------------------------------
+ * 类型定义、声明
+ * ----------------------------------------- */
+
+typedef enum {
+  R, L, C
+} device_t;
 
 typedef struct
 {
@@ -39,19 +51,21 @@ typedef struct
 } sweep_data_t;
 
 static void adc_channel_setup();
-static void dds_setup();
 static bool freq_visited(uint64_t freq, int upper_ix);
-static void calculate_esr_z(double vol_i, double vol_q);
+static void calculate_esr_z(device_t device, double vol_i, double vol_q);
 
 #define TASK
 /* 直流特性 */
 static void TASK dcr_measure();
 /* 1kHz相量法测电容电感 */
-static void TASK ac_esr_measure();
+static void TASK ac_esr_measure(device_t device);
 /* 慢开始扫频 */
 static void TASK network_sweep();
 
-/* 全局变量 */
+/* -----------------------------------------
+ * 全局变量
+ * ----------------------------------------- */
+
 static measure_task_t g_task;
 
 static bool g_reset;
@@ -69,6 +83,9 @@ static __IO struct
 
 static sweep_data_t g_sweep_data[SWEEP_MAX_NUM];
 
+/* -----------------------------------------
+ * 函数实现
+ * ----------------------------------------- */
 
 /* 回调函数：ADC转换完成 */
 void adc_conv_complete_cb()
@@ -85,7 +102,7 @@ void measure_init()
   ads124s_update_value(ads124s_conv_mode, ads124s_mode_single);
   ads124s_update_value(ads124s_pga_en, 0);
   ads124s_update_value(ads124s_status_byte_en, 1);
-  ads124s_update_value(ads124s_datarate, ads124s_datarate_x20);
+  ads124s_update_value(ads124s_datarate, g_datarate);
 
   ads124s_select();
 }
@@ -95,20 +112,33 @@ void measure_task_start(measure_task_t task)
   g_reset = true;
   g_task = task;
 
+  uint32_t start_freq = 0;
   switch (g_task)
   {
+    case TASK_IDLE: return;
     case TASK_SINGLE:
       g_adc.channel = S;
       gpio_set_high(dcr_switch_pin);
+      start_freq = 0;
       break;
-    case TASK_AC_ESR:
+    case TASK_AC_ESR_L:
+      g_adc.channel = I;
+      gpio_set_low(dcr_switch_pin);
+      start_freq = AC_ESR_L_FREQ;
+      break;
+    case TASK_AC_ESR_C:
+      g_adc.channel = I;
+      gpio_set_low(dcr_switch_pin);
+      start_freq = AC_ESR_C_FREQ;
+      break;
     case TASK_SWEEP:
       g_adc.channel = I;
       gpio_set_low(dcr_switch_pin);
+      start_freq = SWEEP_START_FREQ;
       break;
     default: break;
   }
-  dds_setup();
+  freq_conv_with_delay(start_freq);
   adc_channel_setup();
 }
 
@@ -120,7 +150,8 @@ void measure_task_poll()
     switch (g_task)
     {
       case TASK_SINGLE: dcr_measure(); break;
-      case TASK_AC_ESR: ac_esr_measure(); break;
+      case TASK_AC_ESR_L: ac_esr_measure(L); break;
+      case TASK_AC_ESR_C: ac_esr_measure(C); break;
       case TASK_SWEEP:  network_sweep(); break;
       default: break;
     }
@@ -172,20 +203,6 @@ static void adc_channel_setup()
   }
 }
 
-static void dds_setup()
-{
-  switch (g_adc.channel)
-  {
-    case N:
-    case S:
-      freq_convert(0); /* 关闭DDS */ break;
-    case I:
-    case Q:
-      freq_conv_with_delay(AC_START_FREQ); break;
-    default: break;
-  }
-}
-
 /* DCR测量函数 */
 static void TASK dcr_measure()
 {
@@ -220,7 +237,7 @@ static void TASK dcr_measure()
   }
 }
 
-static void TASK ac_esr_measure()
+static void TASK ac_esr_measure(device_t device)
 {
   static double sum = 0;
   static int samples = 0;
@@ -256,7 +273,7 @@ static void TASK ac_esr_measure()
       sum = 0;
 
       tty_print("I: %.4f, Q: %.4f\r\n", vol_i, vol_q);
-      calculate_esr_z(vol_i, vol_q);
+      calculate_esr_z(device, vol_i, vol_q);
       measure_task_done();
     }
   }
@@ -265,7 +282,7 @@ static void TASK ac_esr_measure()
 static void TASK network_sweep()
 {
   static int ix = 0;
-  static uint32_t freq = AC_START_FREQ;
+  static uint32_t freq = SWEEP_START_FREQ;
   static uint32_t delta_freq = DELTA_FREQ_MIN;
   static double vol_i, vol_q;
 
@@ -273,7 +290,7 @@ static void TASK network_sweep()
   {
     g_reset = false;
     ix = 0;
-    freq = AC_START_FREQ;
+    freq = SWEEP_START_FREQ;
     delta_freq = DELTA_FREQ_MIN;
   }
 
@@ -318,7 +335,7 @@ static void TASK network_sweep()
       freq += delta_freq;
     }
 
-    if (ix >= 100 || freq > AC_STOP_FREQ)
+    if (ix >= 100 || freq > SWEEP_STOP_FREQ)
     {
       measure_task_done();
       return;
@@ -340,21 +357,35 @@ static bool freq_visited(uint64_t freq, int upper_ix)
   return false;
 }
 
-static void calculate_esr_z(double vol_i, double vol_q)
+static void calculate_esr_z(device_t device, double vol_i, double vol_q)
 {
-  double Vo = k*sqrt(vol_i*vol_i + vol_q*vol_q);
-  double theta = atan2(vol_q, vol_i) - PHI0;
-  double Vo_real = Vo*cos(theta);
-  double Vo_imag = Vo*sin(theta);
-  double denom = (Vo_imag*Vo_imag + pow(V_DRV-Vo_real, 2));
-  double ZL_real = (R_src*Vo_real* (V_DRV-Vo_real) - R_src*Vo_imag*Vo_imag) / denom;
-  double ZL_imag = (-R_src*V_DRV*Vo_imag) / denom;
+  double Vo, theta, Vo_real, Vo_imag, denom, ZL_real, ZL_imag;
+  double ESR, Z;
 
-  double C = fabs(1e9/(ZL_imag*2*M_PI*AC_START_FREQ));
-  double ESR = ZL_real;
+  Vo = k*sqrt(vol_i*vol_i + vol_q*vol_q);
+  theta = atan2(vol_q, vol_i) - PHI0;
+  Vo_real = Vo*cos(theta);
+  Vo_imag = Vo*sin(theta);
+  denom = (Vo_imag*Vo_imag + pow(V_DRV-Vo_real, 2));
+  ZL_real = (R_src*Vo_real* (V_DRV-Vo_real) - R_src*Vo_imag*Vo_imag) / denom;
+  ZL_imag = (-R_src*V_DRV*Vo_imag) / denom;
 
-  tty_print(
-    "C: %.4f nF\r\n"
-    "ESR: %.4f\r\n\n",
-    C, ESR);
+  ESR = ZL_real;
+
+  if (device == L)
+  {
+    Z = fabs(1e6*ZL_imag/(2*M_PI*AC_ESR_L_FREQ));
+    tty_print(
+      "L: %.4f uH\r\n"
+      "ESR: %.4f\r\n\n",
+      Z, ESR);
+  }
+  else if (device == C)
+  {
+    Z = fabs(1e9/(ZL_imag*2*M_PI*AC_ESR_C_FREQ));
+    tty_print(
+      "C: %.4f nF\r\n"
+      "ESR: %.4f\r\n\n",
+      Z, ESR);
+  }
 }
