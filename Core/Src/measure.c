@@ -170,9 +170,14 @@ void measure_task_done()
   g_task = TASK_IDLE;
 }
 
-void datarate_set(ads124s_datarate_t dr)
+void measure_datarate_set(ads124s_datarate_t dr)
 {
   g_datarate = dr;
+}
+
+void measure_config_update()
+{
+  ads124s_update_value(ads124s_datarate, g_datarate);
 }
 
 /* ------------- 静态函数定义 ------------------ */
@@ -180,7 +185,6 @@ void datarate_set(ads124s_datarate_t dr)
 static void adc_channel_setup()
 {
   gpio_set_low(ads124s_pin_sync);
-  ads124s_update_value(ads124s_datarate, g_datarate);
 
   switch (g_adc.channel)
   {

@@ -16,6 +16,7 @@ static void uart_rx_timeout_enable();
 static uint8_t cmd_recvbufs[2][RECV_BUFSIZE];
 static __IO uint8_t curr_buf;
 
+/* 字符串格式化缓冲区 */
 static char g_text_strbuf[TEXT_BUFSIZE];
 
 /* 指示命令接收是否超时 */

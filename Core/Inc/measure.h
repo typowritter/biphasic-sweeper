@@ -54,7 +54,15 @@ void measure_task_poll();
  */
 void measure_task_done();
 
-void datarate_set(ads124s_datarate_t dr);
+/**
+ * 配置ADC数据速率
+ */
+void measure_datarate_set(ads124s_datarate_t dr);
+
+/**
+ * 更新测量参数配置
+ */
+void measure_config_update();
 
 #pragma GCC diagnostic pop
 #ifdef  __cplusplus

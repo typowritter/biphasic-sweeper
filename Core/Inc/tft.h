@@ -14,8 +14,9 @@
 extern "C" {
 #endif
 
-/* 控件ID定义 */
+#include <stdint.h>
 
+/* 控件ID定义 */
 enum {
   scr_main      = 0,
   btn_auto      = 1,
@@ -23,7 +24,7 @@ enum {
   btn_l         = 3,
   btn_c         = 4,
   btn_distance  = 5,
-  btn_datarate  = 6,
+  btn_config    = 6,
   btn_network   = 7,
   sld_datarate  = 11,
   txt_result    = 20,
