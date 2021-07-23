@@ -40,7 +40,7 @@ void tft_cmd_poll()
   else if (g_status == RECV_TIMEOUT)  /* 超时接收，则有效数据只到指令帧尾 */
   {
     uint8_t *ptr = cmd_recvbufs[1-curr_buf];
-    while (queue_push(*ptr++) != CMD_EOC);
+    for (int i = 0; i < RECV_BUFSIZE && queue_push(*ptr++) != CMD_EOC; i++);
   }
 
   g_status = RECV_IDLE;
