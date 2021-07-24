@@ -20,7 +20,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "spi.h"
-#include "stm32h7xx_hal_gpio.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
